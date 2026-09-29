@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treox • Dürüst ve Ücretsiz Araç Rehberi (by Zolven)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        night: {
+                            950: '#0B0F19',
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155'
+                        },
+                        electric: {
+                            400: '#60A5FA',
+                            500: '#3B82F6',
+                            600: '#2563EB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.2);
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .pulsing-dot {
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3B82F6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-electric-500 selection:text-white">
+
+    <!-- Top PWA Install Notice Banner -->
+    <div id="pwaBanner" class="bg-gradient-to-r from-electric-600 to-indigo-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex items-center justify-between shadow-lg">
+        <div class="flex items-center justify-center space-x-2 mx-auto">
+            <i class="fa-solid fa-mobile-screen-button text-amber-300 animate-bounce"></i>
+            <span>Treox'u telefonuna indirip uygulama gibi kullanmak ister misin?</span>
+            <button onclick="showPwaModal()" class="underline font-bold hover:text-amber-200 ml-1">Nasıl Yapılır?</button>
+        </div>
+        <button onclick="dismissPwaBanner()" class="text-white/80 hover:text-white ml-2 text-base">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- Main Navigation / Header -->
+    <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-4 lg:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo & Brand Badge -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-600 to-indigo-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-electric-500/30">
+                    T
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl font-black tracking-tight text-white glow-text">Treox</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider bg-electric-500/10 text-electric-400 border border-electric-500/30 px-2 py-0.5 rounded-full">
+                            by Zolven
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Dürüst & Ücretsiz Araç Limanı</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions Header -->
+            <div class="flex items-center space-x-3">
+                <button onclick="openRandomToolModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center space-x-2 active:scale-95">
+                    <i class="fa-solid fa-dice text-amber-300"></i>
+                    <span class="hidden md:inline">Bana Bir Araç Çıkar</span>
+                    <span class="md:hidden">Sürpriz</span>
+                </button>
+                <button onclick="scrollToRecommend()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-plus text-electric-400"></i>
+                    <span class="hidden sm:inline">Araç Öner</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- Hero & Search Converter Area -->
+        <section class="text-center max-w-3xl mx-auto mt-4 mb-10">
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                Pahalı Yazılımlara <span class="bg-gradient-to-r from-electric-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">Para Vermeyi Kesin.</span>
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-base font-normal max-w-2xl mx-auto mb-8">
+                Sıfır maliyetli, dürüst freemium incelemeleri ve gizli kalmış hayat kurtaran yapay zeka araçları. Kredi kartı yok, sürpriz fatura yok.
+            </p>
+
+            <!-- Live Search & Converter Bar -->
+            <div class="relative max-w-2xl mx-auto group">
+                <div class="absolute inset-0 bg-gradient-to-r from-electric-500 to-purple-600 rounded-2xl blur-md opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                <div class="relative bg-slate-900/90 border border-slate-700/80 rounded-2xl p-2 flex items-center shadow-2xl">
+                    <i class="fa-solid fa-magnifying-glass text-electric-400 text-lg ml-3 mr-2"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" 
+                           placeholder="Pahalı aracı yaz, bedavasını bul... (Örn: Photoshop, Canva, Acrobat)" 
+                           class="w-full bg-transparent text-white placeholder-slate-500 text-sm sm:text-base focus:outline-none px-2 py-2">
+                    <button onclick="clearSearch()" id="clearSearchBtn" class="hidden text-slate-500 hover:text-white px-3">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Fast Alternative Chips -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-slate-400">
+                <span class="font-medium text-slate-500">Hızlı Arama:</span>
+                <button onclick="quickSearch('Photoshop')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/60 transition">Photoshop</button>
+                <button onclick="quickSearch('Canva')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/60 transition">Canva</button>
+                <button onclick="quickSearch('Acrobat')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/60 transition">Acrobat</button>
+                <button onclick="quickSearch('Grammarly')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700/60 transition">Grammarly</button>
+            </div>
+        </section>
+
+        <!-- Mode Switcher Tabs ("Sen Kimsin?") -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between mb-3 px-1">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-electric-400"></i>
+                    <span>Kullanıcı Modu Seçi̇n</span>
+                </h2>
+                <span id="toolCountBadge" class="text-xs bg-slate-800 text-electric-400 border border-slate-700 px-2.5 py-0.5 rounded-full font-semibold">
+                    0 Araç Listelendi
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs sm:text-sm">
+                <button onclick="setTab('all')" id="tab-all" class="tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-electric-600 text-white shadow-lg shadow-electric-600/30 whitespace-nowrap">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Tüm Araçlar</span>
+                </button>
+
+                <button onclick="setTab('student')" id="tab-student" class="tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 whitespace-nowrap">
+                    <span>🎓 Öğrenci Modu</span>
+                </button>
+
+                <button onclick="setTab('entrepreneur')" id="tab-entrepreneur" class="tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 whitespace-nowrap">
+                    <span>🚀 Girişimci / Freelancer</span>
+                </button>
+
+                <button onclick="setTab('favorites')" id="tab-favorites" class="tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 whitespace-nowrap">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span>Favorilerim (<span id="favCount">0</span>)</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Interactive Tools Grid -->
+        <section id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic tool cards will be injected here via JavaScript -->
+        </section>
+
+        <!-- Empty State UI -->
+        <div id="emptyState" class="hidden text-center py-16 glass-card rounded-3xl border border-slate-800 mt-6 max-w-lg mx-auto">
+            <div class="w-16 h-16 mx-auto mb-4 bg-slate-800 rounded-full flex items-center justify-center text-slate-500 text-2xl">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">Hiçbir araç bulunamadı!</h3>
+            <p class="text-xs text-slate-400 max-w-xs mx-auto mb-6">Aramanıza veya seçtiğiniz moda uygun araç kalmamış olabilir.</p>
+            <button onclick="resetFilters()" class="bg-electric-600 hover:bg-electric-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition">
+                Tüm Filtreleri Temizle
+            </button>
+        </div>
+
+        <!-- Bottom Recommendation Form (Tally-style embed) -->
+        <section id="recommendSection" class="mt-20 glass-card rounded-3xl p-6 sm:p-10 border border-slate-800 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-electric-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="max-w-2xl mx-auto text-center">
+                <span class="inline-block bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+                    Topluluk Gücü
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Bildiğin Daha İyi Bir Araç Var Mı?</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mb-8">
+                    Sırrı kendine saklama. Eğer gizli kalmış, tuzaksız ve hayat kurtaran bir araç biliyorsan bize fırlat. İnceleyelim, adınla Treox'a ekleyelim.
+                </p>
+
+                <form id="recommendForm" onsubmit="submitRecommendation(event)" class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Aracın Adı ve Web Sitesi Linki *</label>
+                        <input type="text" required placeholder="Örn: Blackify - https://blackify.app" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Hangi Derdi Çözüyor? *</label>
+                            <select required class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-electric-500 transition">
+                                <option value="">Seçiniz...</option>
+                                <option value="sunum">Sunum & Doküman</option>
+                                <option value="gorsel">Görsel & Arka Plan</option>
+                                <option value="pdf">PDF İşlemleri</option>
+                                <option value="metin">Metin & Çeviri</option>
+                                <option value="tasarim">Logo & Tasarım</option>
+                                <option value="diger">Başka Bir Dert</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Adın veya Sosyal Medyan (Teşekkür İçin)</label>
+                            <input type="text" placeholder="Örn: @ahmet_dev veya Anonim" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Neden Seviyorsun? (Kısa Fikrin)</label>
+                        <textarea rows="2" placeholder="Ücretsiz sürümünde sınır yok, filigran koymuyor..." class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-electric-600 to-indigo-600 hover:from-electric-500 hover:to-indigo-500 text-white font-bold text-sm py-3 rounded-xl transition shadow-lg shadow-electric-500/25 active:scale-[0.99]">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Aracını Ekibe Gönder
+                    </button>
+                </form>
+
+                <div id="recommendSuccess" class="hidden bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-6 rounded-2xl text-center my-4">
+                    <i class="fa-solid fa-circle-check text-3xl mb-2"></i>
+                    <h4 class="font-bold text-base text-white">Harika! Aracınız İnclemeye Alındı.</h4>
+                    <p class="text-xs text-emerald-300 mt-1">Dürüst freemium kriterlerimize uyuyorsa en kısa sürede "Bulan Avcı" etiketiyle ekleyeceğiz!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 px-4 mt-16 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-bold text-slate-300">Treox</span>
+                <span>•</span>
+                <span>Powered by <strong class="text-electric-400 font-semibold">Zolven Studio</strong></span>
+            </div>
+            <p class="text-center sm:text-right text-slate-500">
+                Hiçbir araçtan sponsorluk almadan dürüstçe listelenir. %100 Ücretsiz & Tuzaksız.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Random Tool Spotlight Modal -->
+    <div id="randomModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-electric-500/40 relative shadow-2xl animate-fade-in">
+            <button onclick="closeRandomModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-4">
+                <span class="bg-amber-400/10 text-amber-300 border border-amber-400/20 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+                    🎲 Sürpriz Keşif
+                </span>
+                <h3 class="text-xl font-bold text-white mt-2">Günün Şanslı Aracı!</h3>
+            </div>
+
+            <div id="randomModalContent">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Setup Modal -->
+    <div id="pwaModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-slate-700 relative text-left">
+            <button onclick="closePwaModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-lg font-bold text-white mb-2 flex items-center">
+                <i class="fa-solid fa-download text-electric-400 mr-2"></i>
+                Treox'u Ana Ekrana Ekle
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">App Store veya Google Play ile uğraşmadan, saniyeler içinde telefonuna uygulama olarak yükle:</p>
+
+            <div class="space-y-3 text-xs">
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                    <strong class="text-white block mb-1">📱 iPhone (Safari):</strong>
+                    Alt menüdeki <i class="fa-solid fa-share-from-square text-electric-400 mx-1"></i> <strong>Paylaş</strong> butonuna bas, ardından <strong>"Ana Ekrana Ekle"</strong> seçeneğini seç.
+                </div>
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                    <strong class="text-white block mb-1">🤖 Android (Chrome):</strong>
+                    Sağ üstteki <i class="fa-solid fa-ellipsis-vertical text-electric-400 mx-1"></i> <strong>Üç Nokta</strong> menüsüne bas, <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> butonuna tıkla.
+                </div>
+            </div>
+
+            <button onclick="closePwaModal()" class="w-full mt-5 bg-electric-600 text-white font-bold text-xs py-2.5 rounded-xl">
+                Anladım, Tamamdır
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-electric-500/50 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-2 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMessage">İşlem başarılı!</span>
+    </div>
+
+    <script>
+        const TOOLS_DATA = [
+            {
+                id: 'photoroom',
+                name: 'Photoroom',
+                category: 'Arka Plan Sil',
+                modes: ['student', 'entrepreneur'],
+                alternativeTag: 'Photoshop Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Piyasadaki en kusursuz saç ve kenar kesimini yapar. Ücretsiz sürümü mükemmeldir ama indirirken köşeye ufak bir logo koyar. O logoyu da telefonun galerisinde kırpıp geçebilirsiniz!',
+                link: 'https://www.photoroom.com',
+                iconClass: 'fa-solid fa-image'
+            },
+            {
+                id: 'gamma',
+                name: 'Gamma.app',
+                category: 'Sunum & Doküman',
+                modes: ['student', 'entrepreneur'],
+                alternativeTag: 'Canva Pro Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Sadece konuyu yazıyorsunuz, 10 saniyede tasarımıyla birlikte sunumu teslim ediyor. Ücretsiz kayıtta devasa kredi verir. Krediniz biterse yeni maille sonsuz döngüye girebilirsiniz.',
+                link: 'https://gamma.app',
+                iconClass: 'fa-solid fa-file-powerpoint'
+            },
+            {
+                id: 'ilovepdf',
+                name: 'iLovePDF',
+                category: 'PDF İşlemleri',
+                modes: ['student'],
+                alternativeTag: 'Adobe Acrobat Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'PDF ile ilgili her dert (bölme, birleştirme, şifre kırma, Word\'e çevirme) burada biter. Üyelik bile istemez. Sadece dosyalarınız devasa boyuttaysa premium uyarısı verir.',
+                link: 'https://www.ilovepdf.com',
+                iconClass: 'fa-solid fa-file-pdf'
+            },
+            {
+                id: 'upscayl',
+                name: 'Upscayl',
+                category: 'Görsel Netleştirme',
+                modes: ['student', 'entrepreneur'],
+                alternativeTag: 'Topaz Gigapixel Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Bulanık veya pikselli fotoğrafları yapay zekayla 4 kat büyütür. Tamamen açık kaynaklı ve ücretsizdir. Sınır, kredi kartı veya gizli tuzaklar kesinlikle yok.',
+                link: 'https://www.upscayl.org',
+                iconClass: 'fa-solid fa-wand-magic-sparkles'
+            },
+            {
+                id: 'deeplwrite',
+                name: 'DeepL Write',
+                category: 'Metin Düzenleme',
+                modes: ['student', 'entrepreneur'],
+                alternativeTag: 'Grammarly Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Yazdığınız bozuk veya amane dilli metni saniyeler içinde jilet gibi kurumsal bir dile çevirir. ChatGPT gibi robotik yazmaz. Günlük kullanımı tamamen bedavadır.',
+                link: 'https://www.deepl.com/write',
+                iconClass: 'fa-solid fa-pen-nib'
+            },
+            {
+                id: 'recraft',
+                name: 'Recraft.ai',
+                category: 'Logo & Vektör Tasarım',
+                modes: ['entrepreneur'],
+                alternativeTag: 'Illustrator Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Vektörel (kalitesi bozulmayan) logoları ve ikonları tek tuşla üretir. Çoğu araç gibi son saniyede para isteyip resmi kilitlemez, her gün ücretsiz kredi yeniler.',
+                link: 'https://www.recraft.ai',
+                iconClass: 'fa-solid fa-bezier-curve'
+            },
+            {
+                id: 'adobepodcast',
+                name: 'Adobe Podcast Enhance',
+                category: 'Ses Temizleme',
+                modes: ['student', 'entrepreneur'],
+                alternativeTag: 'Studio Mic Alternatifi',
+                badgeText: '✓ Çalışıyor & Tuzaksız',
+                review: 'Rüzgarlı veya gürültülü ortamda çekilen telefon seslerini stüdyo mikrofonuyla kaydedilmiş gibi cızırtısız hale getirir. Ücretsiz Adobe hesabı açmanız yeterlidir.',
+                link: 'https://podcast.adobe.com/enhance',
+                iconClass: 'fa-solid fa-microphone-lines'
+            }
+        ];
+
+        let currentTab = 'all';
+        let searchQuery = '';
+        let favorites = JSON.parse(localStorage.getItem('treox_favorites') || '[]');
+
+        // Initialize App on DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            updateFavCount();
+        });
+
+        function renderTools() {
+            const grid = document.getElementById('toolsGrid');
+            const emptyState = document.getElementById('emptyState');
+            grid.innerHTML = '';
+
+            let filtered = TOOLS_DATA.filter(tool => {
+                // Mode tab filter
+                if (currentTab === 'student' && !tool.modes.includes('student')) return false;
+                if (currentTab === 'entrepreneur' && !tool.modes.includes('entrepreneur')) return false;
+                if (currentTab === 'favorites' && !favorites.includes(tool.id)) return false;
+
+                // Search query filter (Matches Name, Category, Alternative Tag, Review text)
+                if (searchQuery.trim() !== '') {
+                    const q = searchQuery.toLowerCase();
+                    const matchName = tool.name.toLowerCase().includes(q);
+                    const matchCategory = tool.category.toLowerCase().includes(q);
+                    const matchAlt = tool.alternativeTag.toLowerCase().includes(q);
+                    const matchReview = tool.review.toLowerCase().includes(q);
+                    return matchName || matchCategory || matchAlt || matchReview;
+                }
+
+                return true;
+            });
+
+            document.getElementById('toolCountBadge').innerText = `${filtered.length} Araç Listelendi`;
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filtered.forEach(tool => {
+                    const isFav = favorites.includes(tool.id);
+                    const cardHtml = `
+                        <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between transition-all duration-300 relative group">
+                            <div>
+                                <!-- Top Row: Category & Badges -->
+                                <div class="flex items-center justify-between gap-2 mb-3">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-electric-500/10 text-electric-400 border border-electric-500/20 px-2.5 py-1 rounded-full flex items-center space-x-1">
+                                        <i class="${tool.iconClass} mr-1"></i> ${tool.category}
+                                    </span>
+                                    
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="inline-flex items-center text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulsing-dot mr-1"></span>
+                                            ${tool.badgeText}
+                                        </span>
+                                        <button onclick="toggleFavorite('${tool.id}')" class="text-slate-500 hover:text-amber-400 text-base p-1 transition" title="Favorilere Ekle">
+                                            <i class="${isFav ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star'}"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Tool Title & Alternative Tag -->
+                                <div class="mb-3">
+                                    <h3 class="text-xl font-extrabold text-white group-hover:text-electric-400 transition-colors flex items-center justify-between">
+                                        <span>${tool.name}</span>
+                                    </h3>
+                                    <span class="text-xs font-medium text-slate-400 inline-block mt-0.5">
+                                        💡 <span class="text-slate-300 font-semibold">${tool.alternativeTag}</span>
+                                    </span>
+                                </div>
+
+                                <!-- Honest Review Note Box -->
+                                <div class="bg-slate-900/90 border border-slate-800/90 rounded-xl p-3.5 mb-4 text-xs text-slate-300 leading-relaxed">
+                                    <div class="text-[10px] font-bold uppercase text-amber-400/90 mb-1 flex items-center space-x-1">
+                                        <i class="fa-solid fa-comment-dots"></i>
+                                        <span>Samimi İnceleme & Taktik</span>
+                                    </div>
+                                    "${tool.review}"
+                                </div>
+                            </div>
+
+                            <!-- Bottom Actions -->
+                            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                                <button onclick="shareOnWhatsApp('${tool.name}', '${tool.link}')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium px-3 py-2 rounded-xl transition flex items-center space-x-1.5" title="WhatsApp'ta Paylaş">
+                                    <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                                    <span class="hidden sm:inline">Arkadaşına At</span>
+                                </button>
+
+                                <a href="${tool.link}" target="_blank" rel="noopener noreferrer" class="bg-electric-600 hover:bg-electric-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center space-x-1 shadow-md shadow-electric-600/20 active:scale-95">
+                                    <span>Araca Git</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHtml;
+                });
+            }
+        }
+
+        function setTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-slate-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 whitespace-nowrap';
+            });
+
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            if (activeBtn) {
+                activeBtn.className = 'tab-btn px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center space-x-2 bg-electric-600 text-white shadow-lg shadow-electric-600/30 whitespace-nowrap';
+            }
+            renderTools();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value;
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchQuery.trim() !== '') {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderTools();
+        }
+
+        function quickSearch(keyword) {
+            document.getElementById('searchInput').value = keyword;
+            handleSearch();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        function resetFilters() {
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            setTab('all');
+        }
+
+        function toggleFavorite(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+                showToast('Favorilerden çıkarıldı.', 'info');
+            } else {
+                favorites.push(id);
+                showToast('Favorilere eklendi! ⭐', 'success');
+            }
+            localStorage.setItem('treox_favorites', JSON.stringify(favorites));
+            updateFavCount();
+            renderTools();
+        }
+
+        function updateFavCount() {
+            document.getElementById('favCount').innerText = favorites.length;
+        }
+
+        function shareOnWhatsApp(name, link) {
+            const text = `Kanka Bak, sürekli lazım oluyor ya! ${name} diye tuzaksız ve bedava bir araç buldum: ${link} (Treox Rehberinden)`;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+            showToast('WhatsApp paylaşım linki hazırlandı!', 'success');
+        }
+
+        function openRandomToolModal() {
+            const randomIndex = Math.floor(Math.random() * TOOLS_DATA.length);
+            const tool = TOOLS_DATA[randomIndex];
+            
+            const content = `
+                <div class="text-center">
+                    <div class="w-12 h-12 mx-auto bg-electric-500/10 border border-electric-500/30 rounded-2xl flex items-center justify-center text-electric-400 text-2xl mb-3">
+                        <i class="${tool.iconClass}"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-white">${tool.name}</h4>
+                    <span class="text-xs text-electric-400 font-semibold mb-3 inline-block">${tool.alternativeTag}</span>
+                    <p class="text-xs text-slate-300 bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-left my-3 leading-relaxed">
+                        "${tool.review}"
+                    </p>
+                    <a href="${tool.link}" target="_blank" class="w-full bg-electric-600 hover:bg-electric-500 text-white font-bold text-xs py-3 rounded-xl transition inline-block mt-2">
+                        Araca Git <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                    </a>
+                </div>
+            `;
+            
+            document.getElementById('randomModalContent').innerHTML = content;
+            document.getElementById('randomModal').classList.remove('hidden');
+        }
+
+        function closeRandomModal() {
+            document.getElementById('randomModal').classList.add('hidden');
+        }
+
+        function showPwaModal() {
+            document.getElementById('pwaModal').classList.remove('hidden');
+        }
+
+        function closePwaModal() {
+            document.getElementById('pwaModal').classList.add('hidden');
+        }
+
+        function dismissPwaBanner() {
+            document.getElementById('pwaBanner').classList.add('hidden');
+        }
+
+        function scrollToRecommend() {
+            document.getElementById('recommendSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitRecommendation(e) {
+            e.preventDefault();
+            document.getElementById('recommendForm').classList.add('hidden');
+            document.getElementById('recommendSuccess').classList.remove('hidden');
+            showToast('Öneriniz alındı, teşekkürler!', 'success');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+
+            msgSpan.innerText = message;
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+            } else {
+                icon.className = 'fa-solid fa-circle-info text-electric-400 text-base';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
