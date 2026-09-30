@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Treox">
     <meta name="theme-color" content="#0b0f19">
 
-    <!-- SEO ve Sosyal Medya Paylaşım Kartları (Open Graph) -->
+    <!-- SEO ve Sosyal Medya Paylaşım Kartları -->
     <meta name="title" content="Treox - %100 Ücretsiz Yapay Zeka Cephaneliği">
     <meta name="description" content="Abonelik tuzaklarına son! İhtiyacın olan en iyi ve tamamen ücretsiz yapay zeka araçlarını dürüst notlarıyla keşfet.">
     <meta property="og:type" content="website">
@@ -32,6 +32,17 @@
             --text-muted: #8b949e;
             --success: #00e676;
             --warning: #ffb703;
+            --heart: #ff2a5f;
+            --wizard-bg: rgba(22, 27, 38, 0.6);
+        }
+
+        body.light-theme {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --card-border: #e1e4e8;
+            --text-main: #0b0f19;
+            --text-muted: #57606a;
+            --wizard-bg: rgba(255, 255, 255, 0.8);
         }
 
         * {
@@ -47,11 +58,39 @@
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Top Controls Bar */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .control-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            border-color: var(--accent-blue);
         }
 
         header {
             text-align: center;
-            padding: 20px 0 10px;
+            padding: 10px 0;
         }
 
         .brand-logo {
@@ -109,13 +148,17 @@
 
         .filter-btn.cat-btn.active {
             border-color: var(--accent-purple);
-            color: #d1b3ff;
+            color: #7000ff;
             background: rgba(112, 0, 255, 0.15);
+        }
+
+        body.light-theme .filter-btn.cat-btn.active {
+            color: var(--accent-purple);
         }
 
         /* "Derdini Söyle" Sihirbazı */
         .wizard-section {
-            background: rgba(22, 27, 38, 0.6);
+            background: var(--wizard-bg);
             border: 1px dashed var(--card-border);
             border-radius: 12px;
             padding: 14px;
@@ -141,7 +184,7 @@
         }
 
         .chip-btn {
-            background: rgba(255, 255, 255, 0.04);
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
             color: var(--text-main);
             padding: 6px 12px;
@@ -153,7 +196,6 @@
 
         .chip-btn:hover {
             border-color: var(--accent-blue);
-            background: var(--card-bg);
         }
 
         /* Arama Alanı */
@@ -250,12 +292,12 @@
         }
 
         .card-note {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 240, 255, 0.05);
             border-left: 3px solid var(--accent-blue);
             padding: 10px;
             border-radius: 0 8px 8px 0;
             font-size: 0.85rem;
-            color: #d0d7de;
+            color: var(--text-main);
             margin-bottom: 12px;
         }
 
@@ -272,7 +314,7 @@
             padding: 8px 12px;
             font-size: 0.8rem;
             font-weight: 700;
-            color: #d1b3ff;
+            color: var(--accent-purple);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -282,7 +324,7 @@
         .taktik-content {
             padding: 0 12px 10px;
             font-size: 0.8rem;
-            color: #e2d5f8;
+            color: var(--text-main);
             display: none;
             line-height: 1.4;
         }
@@ -310,24 +352,73 @@
             background: transparent;
             border: 1px solid var(--card-border);
             color: var(--text-muted);
-            width: 40px;
+            padding: 0 10px;
+            height: 40px;
             border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
-        .btn-icon.active { color: var(--warning); border-color: var(--warning); }
+        .btn-icon.active-fav { color: var(--warning); border-color: var(--warning); }
+        .btn-icon.active-upvote { color: var(--heart); border-color: var(--heart); background: rgba(255, 42, 95, 0.08); }
 
         .tally-box {
-            background: linear-gradient(180deg, var(--card-bg) 0%, rgba(11,15,25,1) 100%);
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 24px;
             text-align: center;
             max-width: 600px;
             margin: 0 auto 40px;
+        }
+
+        /* PWA Uygulama Yükle Banner */
+        .pwa-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--accent-blue);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 999;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translate(-50%, 100px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        .pwa-text { font-size: 0.85rem; font-weight: 600; }
+
+        .pwa-install-btn {
+            background: var(--accent-blue);
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .pwa-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         footer {
@@ -340,59 +431,73 @@
         @media (max-width: 600px) {
             .search-section { flex-direction: column; }
             .surprise-btn { justify-content: center; padding: 12px; }
+            .pwa-banner { width: 90%; justify-content: space-between; }
         }
     </style>
 </head>
 <body>
 
+    <div class="top-bar">
+        <button class="control-btn" onclick="toggleLanguage()"><i data-lucide="globe" size="14"></i> <span id="langLabel">EN</span></button>
+        <button class="control-btn" onclick="toggleTheme()"><i data-lucide="sun" id="themeIcon" size="14"></i> <span id="themeLabel">Mod</span></button>
+    </div>
+
     <header>
         <div class="brand-logo">TREOX</div>
-        <div class="brand-sub">Zolven Tarafından Güçlendirildi • %100 Ücretsiz Cephanelik</div>
+        <div class="brand-sub" id="txtBrandSub">Zolven Tarafından Güçlendirildi • %100 Ücretsiz Cephanelik</div>
         
         <div class="filter-section">
             <!-- Modlar -->
-            <div class="pill-group">
-                <button class="filter-btn active" onclick="filterMode('all', this)"><i data-lucide="grid"></i> Tümü</button>
-                <button class="filter-btn" onclick="filterMode('ogrenci', this)"><i data-lucide="graduation-cap"></i> Öğrenci</button>
-                <button class="filter-btn" onclick="filterMode('girisimci', this)"><i data-lucide="briefcase"></i> Girişimci</button>
+            <div class="pill-group" id="modeGroup">
+                <button class="filter-btn active" onclick="filterMode('all', this)"><i data-lucide="grid"></i> <span data-key="modeAll">Tümü</span></button>
+                <button class="filter-btn" onclick="filterMode('ogrenci', this)"><i data-lucide="graduation-cap"></i> <span data-key="modeStudent">Öğrenci</span></button>
+                <button class="filter-btn" onclick="filterMode('girisimci', this)"><i data-lucide="briefcase"></i> <span data-key="modeEntrepreneur">Girişimci</span></button>
             </div>
 
             <!-- Kategoriler -->
-            <div class="pill-group">
-                <button class="filter-btn cat-btn active" onclick="filterCategory('all', this)">Hepsi</button>
-                <button class="filter-btn cat-btn" onclick="filterCategory('gorsel', this)">🎨 Görsel & Tasarım</button>
-                <button class="filter-btn cat-btn" onclick="filterCategory('video', this)">🎬 Video & Ses</button>
-                <button class="filter-btn cat-btn" onclick="filterCategory('pdf', this)">📄 PDF & Araştırma</button>
-                <button class="filter-btn cat-btn" onclick="filterCategory('kod', this)">💻 Kod & Yapay Zeka</button>
-                <button class="filter-btn cat-btn" onclick="filterCategory('hile', this)">🛠️ Hileler</button>
+            <div class="pill-group" id="catGroup">
+                <button class="filter-btn cat-btn active" onclick="filterCategory('all', this)" data-key="catAll">Hepsi</button>
+                <button class="filter-btn cat-btn" onclick="filterCategory('gorsel', this)" data-key="catVisual">🎨 Görsel & Tasarım</button>
+                <button class="filter-btn cat-btn" onclick="filterCategory('video', this)" data-key="catVideo">🎬 Video & Ses</button>
+                <button class="filter-btn cat-btn" onclick="filterCategory('pdf', this)" data-key="catPdf">📄 PDF & Araştırma</button>
+                <button class="filter-btn cat-btn" onclick="filterCategory('kod', this)" data-key="catCode">💻 Kod & AI</button>
+                <button class="filter-btn cat-btn" onclick="filterCategory('hile', this)" data-key="catTricks">🛠️ Hileler</button>
             </div>
         </div>
 
         <!-- "Derdini Söyle" Sihirbazı -->
         <div class="wizard-section">
-            <div class="wizard-title">🎯 Ne Yapmak İstiyorsun? (Hızlı Seçim)</div>
-            <div class="wizard-chips">
-                <button class="chip-btn" onclick="quickWizard('upscayl')">⚡ Bulanık Fotoğrafı Netleştir</button>
-                <button class="chip-btn" onclick="quickWizard('gamma')">⚡ 10 Saniyede Sunum Yap</button>
-                <button class="chip-btn" onclick="quickWizard('adobepodcast')">⚡ Dip Gürültüsünü Sil</button>
-                <button class="chip-btn" onclick="quickWizard('chatpdf')">⚡ PDF'i Türkçe Özetlet</button>
-                <button class="chip-btn" onclick="quickWizard('10minutemail')">⚡ Sınırsız Sahte Mail Al</button>
+            <div class="wizard-title" id="txtWizardTitle">🎯 Ne Yapmak İstiyorsun? (Hızlı Seçim)</div>
+            <div class="wizard-chips" id="wizardChips">
+                <button class="chip-btn" onclick="quickWizard('upscayl')">⚡ <span data-key="wiz1">Bulanık Fotoğrafı Netleştir</span></button>
+                <button class="chip-btn" onclick="quickWizard('gamma')">⚡ <span data-key="wiz2">10 Saniyede Sunum Yap</span></button>
+                <button class="chip-btn" onclick="quickWizard('adobepodcast')">⚡ <span data-key="wiz3">Dip Gürültüsünü Sil</span></button>
+                <button class="chip-btn" onclick="quickWizard('chatpdf')">⚡ <span data-key="wiz4">PDF'i Türkçe Özetlet</span></button>
+                <button class="chip-btn" onclick="quickWizard('10minutemail')">⚡ <span data-key="wiz5">Sınırsız Sahte Mail Al</span></button>
             </div>
         </div>
 
         <div class="search-section">
             <input type="text" id="searchInput" class="search-input" placeholder="Pahalı aracı yaz (Photoshop, Canva) veya dert ara..." oninput="searchTools()">
-            <button class="surprise-btn" onclick="randomSurprise()"><i data-lucide="dices"></i> Rastgele Araç</button>
+            <button class="surprise-btn" onclick="randomSurprise()"><i data-lucide="dices"></i> <span id="txtSurprise">Rastgele Araç</span></button>
         </div>
     </header>
 
     <div class="grid" id="toolsGrid"></div>
 
     <div class="tally-box">
-        <h3>Bildiğin Daha İyi Bir Araç Mı Var?</h3>
-        <p>Gizli kalmış, tuzaksız ve hayat kurtaran bir araç biliyorsan bize fırlat. İnceleyip senin adınla Treox'a ekleyelim.</p>
+        <h3 id="txtTallyHead">Bildiğin Daha İyi Bir Araç Mı Var?</h3>
+        <p id="txtTallySub">Gizli kalmış, tuzaksız ve hayat kurtaran bir araç biliyorsan bize fırlat. İnceleyip senin adınla Treox'a ekleyelim.</p>
         <iframe data-tally-src="https://tally.so/embed/w2xD1e?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="250" frameborder="0" marginheight="0" marginwidth="0" title="Araç Öner"></iframe>
         <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div class="pwa-banner" id="pwaBanner" style="display: none;">
+        <i data-lucide="smartphone" size="18"></i>
+        <span class="pwa-text" id="txtPwa">Treox'u Telefona Yükle!</span>
+        <button class="pwa-install-btn" id="pwaBtn" onclick="installPWA()">Yükle</button>
+        <button class="pwa-close-btn" onclick="closePWABanner()">✕</button>
     </div>
 
     <footer>
@@ -400,16 +505,79 @@
     </footer>
 
     <script>
+        const translations = {
+            tr: {
+                brandSub: "Zolven Tarafından Güçlendirildi • %100 Ücretsiz Cephanelik",
+                modeAll: "Tümü",
+                modeStudent: "Öğrenci",
+                modeEntrepreneur: "Girişimci",
+                catAll: "Hepsi",
+                catVisual: "🎨 Görsel & Tasarım",
+                catVideo: "🎬 Video & Ses",
+                catPdf: "📄 PDF & Araştırma",
+                catCode: "💻 Kod & AI",
+                catTricks: "🛠️ Hileler",
+                wizardTitle: "🎯 Ne Yapmak İstiyorsun? (Hızlı Seçim)",
+                wiz1: "Bulanık Fotoğrafı Netleştir",
+                wiz2: "10 Saniyede Sunum Yap",
+                wiz3: "Dip Gürültüsünü Sil",
+                wiz4: "PDF'i Türkçe Özetlet",
+                wiz5: "Sınırsız Sahte Mail Al",
+                searchPlaceholder: "Pahalı aracı yaz (Photoshop, Canva) veya dert ara...",
+                surpriseBtn: "Rastgele Araç",
+                honestNote: "Dürüst Not:",
+                promptTaktik: "⚡ Örnek Prompt & Taktik",
+                goToTool: "Araca Git",
+                working: "Çalışıyor",
+                tallyHead: "Bildiğin Daha İyi Bir Araç Mı Var?",
+                tallySub: "Gizli kalmış, tuzaksız ve hayat kurtaran bir araç biliyorsan bize fırlat. İnceleyip senin adınla Treox'a ekleyelim.",
+                pwaText: "Treox'u Ana Ekrana Ekle!",
+                pwaInstall: "Yükle"
+            },
+            en: {
+                brandSub: "Powered by Zolven • 100% Free AI Toolbox",
+                modeAll: "All",
+                modeStudent: "Student",
+                modeEntrepreneur: "Entrepreneur",
+                catAll: "All",
+                catVisual: "🎨 Visual & Design",
+                catVideo: "🎬 Video & Audio",
+                catPdf: "📄 PDF & Research",
+                catCode: "💻 Code & AI",
+                catTricks: "🛠️ Utility & Tricks",
+                wizardTitle: "🎯 WHAT DO YOU WANT TO DO? (QUICK SELECT)",
+                wiz1: "Unblur & Enhance Photo",
+                wiz2: "Create Presentation in 10s",
+                wiz3: "Remove Background Noise",
+                wiz4: "Summarize PDF Document",
+                wiz5: "Get Temp Fake Email",
+                searchPlaceholder: "Search expensive tool (Photoshop, Canva) or task...",
+                surpriseBtn: "Surprise Tool",
+                honestNote: "Honest Tip:",
+                promptTaktik: "⚡ Prompt & Pro Tip",
+                goToTool: "Visit Tool",
+                working: "Active",
+                tallyHead: "Know a Better Free Tool?",
+                tallySub: "If you know a hidden gem with no subscription trap, send it over! We'll test and list it with your name.",
+                pwaText: "Install Treox App!",
+                pwaInstall: "Install"
+            }
+        };
+
         const tools = [
             {
                 id: "photoroom",
                 name: "Photoroom",
                 cat: "gorsel",
+                baseVotes: 42,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["photoshop", "arka plan", "resim", "fotoğraf"],
-                desc: "Piyasadaki en kusursuz saç ve kenar kesimini yapar.",
-                note: "Ücretsiz sürümü harika ama köşeye logo koyar. Galeride resmi kırpıp geçebilirsiniz!",
-                taktik: "💡 **İpucu:** E-ticaret ürün çekimlerinde arka planı sildikten sonra 'Studio Light' seçeneğini kullanarak profesyonel katalog görseli elde edebilirsiniz.",
+                keywords: ["photoshop", "arka plan", "resim", "fotoğraf", "background", "remove"],
+                desc_tr: "Piyasadaki en kusursuz saç ve kenar kesimini yapar.",
+                desc_en: "Seamless background removal with perfect edge detection.",
+                note_tr: "Ücretsiz sürümü harika ama köşeye logo koyar. Galeride resmi kırpıp geçebilirsiniz!",
+                note_en: "Great free tier, puts a small logo. Just crop it in your gallery!",
+                taktik_tr: "💡 **İpucu:** E-ticaret ürün çekimlerinde arka planı sildikten sonra 'Studio Light' seçeneğini kullanın.",
+                taktik_en: "💡 **Pro Tip:** Use 'Studio Light' preset after background removal for professional product shots.",
                 url: "https://www.photoroom.com",
                 icon: "image"
             },
@@ -417,11 +585,15 @@
                 id: "photopea",
                 name: "Photopea",
                 cat: "gorsel",
+                baseVotes: 89,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["tasarım", "psd", "düzenleme", "photoshop"],
-                desc: "Photoshop'un tarayıcıda çalışan %100 ücretsiz birebir kopyası.",
-                note: "Crackli program indirme devri bitti. Tarayıcıda açılır ve tüm özellikleri açıktır.",
-                taktik: "💡 **İpucu:** Bilgisayarınızdaki `.psd` dosyalarını doğrudan tarayıcıya sürükleyip düzenleyebilirsiniz.",
+                keywords: ["tasarım", "psd", "düzenleme", "photoshop", "editor"],
+                desc_tr: "Photoshop'un tarayıcıda çalışan %100 ücretsiz birebir kopyası.",
+                desc_en: "A 100% free Photoshop clone running directly in your browser.",
+                note_tr: "Crackli program indirme devri bitti. Tarayıcıda açılır ve tüm özellikleri açıktır.",
+                note_en: "No pirated software needed. Runs in browser with all features unlocked.",
+                taktik_tr: "💡 **İpucu:** Bilgisayarınızdaki `.psd` dosyalarını doğrudan tarayıcıya sürükleyip düzenleyebilirsiniz.",
+                taktik_en: "💡 **Pro Tip:** Drag & drop any `.psd` file directly into your browser to edit.",
                 url: "https://www.photopea.com",
                 icon: "layout"
             },
@@ -429,11 +601,15 @@
                 id: "upscayl",
                 name: "Upscayl",
                 cat: "gorsel",
+                baseVotes: 64,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["fotoğraf büyütme", "hd", "netleştirme", "bulanık"],
-                desc: "Bulanık veya pikselli fotoğrafları bozmadan 4 kat büyütür.",
-                note: "Tamamen açık kaynaklı ve ücretsizdir. Sürpriz tuzak yok.",
-                taktik: "💡 **İpucu:** Arayüzde 'Digital Art' seçeneğini seçerseniz çizimleri, 'Fast Real-ESRGAN'ı seçerseniz insan yüzlerini pürüzsüz netleştirir.",
+                keywords: ["fotoğraf büyütme", "hd", "netleştirme", "bulanık", "upscale"],
+                desc_tr: "Bulanık veya pikselli fotoğrafları bozmadan 4 kat büyütür.",
+                desc_en: "Upscales low-res or blurry images up to 4x without losing quality.",
+                note_tr: "Tamamen açık kaynaklı ve ücretsizdir. Sürpriz tuzak yok.",
+                note_en: "Completely open-source and free. Zero hidden fees.",
+                taktik_tr: "💡 **İpucu:** 'Fast Real-ESRGAN' modelini seçerseniz insan yüzlerini pürüzsüz netleştirir.",
+                taktik_en: "💡 **Pro Tip:** Use 'Fast Real-ESRGAN' for smooth face enhancement.",
                 url: "https://www.upscayl.org",
                 icon: "sparkles"
             },
@@ -441,11 +617,15 @@
                 id: "recraft",
                 name: "Recraft.ai",
                 cat: "gorsel",
+                baseVotes: 51,
                 modes: ["girisimci"],
-                keywords: ["logo", "vektör", "çizim", "illustrator"],
-                desc: "Vektörel (kalitesi bozulmayan) logoları tek tıkla üretir.",
-                note: "İndirme anında para istemez, günlük devasa ücretsiz kredi sunar.",
-                taktik: "💡 **Prompt:** 'Minimalist tech startup logo, vector line art, cyan accent, isolated on black background'",
+                keywords: ["logo", "vektör", "çizim", "illustrator", "vector"],
+                desc_tr: "Vektörel (kalitesi bozulmayan) logoları tek tıkla üretir.",
+                desc_en: "Generates high-quality infinite resolution vector graphics and logos.",
+                note_tr: "İndirme anında para istemez, günlük devasa ücretsiz kredi sunar.",
+                note_en: "Generous daily free credits with no paywall on export.",
+                taktik_tr: "💡 **Prompt:** 'Minimalist tech startup logo, vector line art, cyan accent, isolated on black background'",
+                taktik_en: "💡 **Prompt:** 'Minimalist tech startup logo, vector line art, cyan accent, isolated on black background'",
                 url: "https://www.recraft.ai",
                 icon: "pen-tool"
             },
@@ -453,11 +633,15 @@
                 id: "adobepodcast",
                 name: "Adobe Podcast AI",
                 cat: "video",
+                baseVotes: 95,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["ses", "mikrofon", "podcast", "gürültü", "cızırtı"],
-                desc: "Rüzgarlı ses kaydını bile 10.000 TL'lik stüdyo mikrofonu kalitesine getirir.",
-                note: "Sadece ücretsiz Adobe hesabı (Google ile) açmanız yeterlidir.",
-                taktik: "💡 **İpucu:** Dip gürültüsü çok yüksekse 'Enhance Speech' kaydırıcısını %80 seviyesinde tutarak en doğal sesi yakalayın.",
+                keywords: ["ses", "mikrofon", "podcast", "gürültü", "cızırtı", "audio"],
+                desc_tr: "Rüzgarlı ses kaydını bile 10.000 TL'lik stüdyo mikrofonu kalitesine getirir.",
+                desc_en: "Transforms noisy phone recordings into professional studio quality audio.",
+                note_tr: "Sadece ücretsiz Adobe hesabı (Google ile) açmanız yeterlidir.",
+                note_en: "Free to use, just sign in with a free Adobe/Google account.",
+                taktik_tr: "💡 **İpucu:** Dip gürültüsü yüksekse 'Enhance Speech' kaydırıcısını %80 seviyesine getirin.",
+                taktik_en: "💡 **Pro Tip:** Keep 'Enhance Speech' slider around 80% for natural noise removal.",
                 url: "https://podcast.adobe.com/enhance",
                 icon: "mic"
             },
@@ -465,11 +649,15 @@
                 id: "capcutweb",
                 name: "CapCut Web",
                 cat: "video",
+                baseVotes: 73,
                 modes: ["girisimci"],
-                keywords: ["video düzenleme", "reels", "tiktok", "altyazı"],
-                desc: "Tarayıcı üzerinden profesyonel kurgu ve yapay zeka altyazısı yapar.",
-                note: "Pro ikonlu efektlere tıklamazsanız filigransız 1080p çıktı verir.",
-                taktik: "💡 **İpucu:** 'Text -> Auto Captions' butonuna basarak Türkçe altyazıları 5 saniyede videoya çakabilirsiniz.",
+                keywords: ["video düzenleme", "reels", "tiktok", "altyazı", "editor"],
+                desc_tr: "Tarayıcı üzerinden profesyonel kurgu ve yapay zeka altyazısı yapar.",
+                desc_en: "Browser-based video editor with automatic AI auto-captions.",
+                note_tr: "Pro ikonlu efektlere tıklamazsanız filigransız 1080p çıktı verir.",
+                note_en: "Export 1080p with no watermark as long as you avoid 'PRO' badges.",
+                taktik_tr: "💡 **İpucu:** 'Text -> Auto Captions' butonuna basarak altyazıları 5 saniyede çıkarın.",
+                taktik_en: "💡 **Pro Tip:** Click 'Text -> Auto Captions' to auto-generate subtitles instantly.",
                 url: "https://www.capcut.com/editor",
                 icon: "video"
             },
@@ -477,11 +665,15 @@
                 id: "elevenlabs",
                 name: "ElevenLabs",
                 cat: "video",
+                baseVotes: 110,
                 modes: ["girisimci", "ogrenci"],
-                keywords: ["seslendirme", "robot", "dublaj", "okuma"],
-                desc: "Yazdığınız metni dünyanın en gerçekçi Türkçe sesleriyle seslendirir.",
-                note: "Krediniz biterse '10MinuteMail' aracıyla yeni mail alıp sınırsız kullanın.",
-                taktik: "💡 **İpucu:** Metindeki noktalama işaretlerini bol kullanın. Parantez içine `(duraksar)` veya `(iç çeker)` yazarak gerçekçiliği artırın.",
+                keywords: ["seslendirme", "robot", "dublaj", "okuma", "voice"],
+                desc_tr: "Yazdığınız metni dünyanın en gerçekçi Türkçe sesleriyle seslendirir.",
+                desc_en: "Ultra-realistic AI voice generator supporting realistic human emotion.",
+                note_tr: "Krediniz biterse '10MinuteMail' aracıyla yeni mail alıp sınırsız kullanın.",
+                note_en: "When credits run out, grab a new temporary email via '10MinuteMail' to reset.",
+                taktik_tr: "💡 **İpucu:** Metne noktalama işaretleri ekleyin. Parantez içine `(duraksar)` yazın.",
+                taktik_en: "💡 **Pro Tip:** Add punctuation for natural pacing. Use brackets like `(pauses)`.",
                 url: "https://elevenlabs.io",
                 icon: "volume-2"
             },
@@ -489,11 +681,15 @@
                 id: "perplexity",
                 name: "Perplexity AI",
                 cat: "pdf",
+                baseVotes: 124,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["arama", "google", "makale", "araştırma", "kaynak"],
-                desc: "Google reklamlarından kurtulun. Sorduğunuz şeyi kaynaklı net cevaplar.",
-                note: "Bedava sürümü ChatGPT'den araştırmada kat kat üstündür.",
-                taktik: "💡 **İpucu:** Sorumuzun sonuna 'Bunu bana 5 maddede basitleştirip kaynakça ekle' yazarak en hızlı raporu alın.",
+                keywords: ["arama", "google", "makale", "araştırma", "kaynak", "search"],
+                desc_tr: "Google reklamlarından kurtulun. Sorduğunuz şeyi kaynaklı net cevaplar.",
+                desc_en: "AI search engine providing accurate answers with cited live web sources.",
+                note_tr: "Bedava sürümü ChatGPT'den araştırmada kat kat üstündür.",
+                note_en: "Free version beats ChatGPT for real-time web research and academic sourcing.",
+                taktik_tr: "💡 **İpucu:** Sorumuzun sonuna 'Bunu bana 5 maddede özetleyip kaynak ekle' yazın.",
+                taktik_en: "💡 **Pro Tip:** Append 'Summarize in 5 bullet points with citations' for quick briefs.",
                 url: "https://www.perplexity.ai",
                 icon: "search"
             },
@@ -501,11 +697,15 @@
                 id: "chatpdf",
                 name: "ChatPDF",
                 cat: "pdf",
+                baseVotes: 78,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["pdf", "okuma", "özet", "makale", "kitap"],
-                desc: "100 sayfalık makaleyi yükleyin, Türkçe özetini saniyeler içinde alın.",
-                note: "Günde 2 PDF yükleme hakkı tamamen ücretsizdir.",
-                taktik: "💡 **İpucu:** PDF'i yükledikten sonra 'Bu belgenin en zayıf 3 yönü ve ana tezi nedir?' diye sorun.",
+                keywords: ["pdf", "okuma", "özet", "makale", "kitap", "summary"],
+                desc_tr: "100 sayfalık makaleyi yükleyin, Türkçe özetini saniyeler içinde alın.",
+                desc_en: "Upload any PDF document and ask questions or request summaries instantly.",
+                note_tr: "Günde 2 PDF yükleme hakkı tamamen ücretsizdir.",
+                note_en: "2 free PDF uploads per day with full chat functionality.",
+                taktik_tr: "💡 **İpucu:** PDF'i yükledikten sonra 'Bu belgenin ana tezi nedir?' diye sorun.",
+                taktik_en: "💡 **Pro Tip:** Ask 'What are the top 3 takeaways and critical flaws in this paper?'.",
                 url: "https://www.chatpdf.com",
                 icon: "file-question"
             },
@@ -513,11 +713,15 @@
                 id: "gamma",
                 name: "Gamma.app",
                 cat: "pdf",
+                baseVotes: 92,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["powerpoint", "canva", "sunum", "slayt"],
-                desc: "Sadece konuyu yazın, 10 saniyede tasarımlı sunum üretsin.",
-                note: "Krediniz bittiğinde gizli sekmede yeni maille döngüye girebilirsiniz.",
-                taktik: "💡 **Prompt:** 'Yapay zeka ile iş kurmak isteyenler için 8 slaytlık modern rehber, koyu tema, aksiyon odaklı.'",
+                keywords: ["powerpoint", "canva", "sunum", "slayt", "presentation"],
+                desc_tr: "Sadece konuyu yazın, 10 saniyede tasarımlı sunum üretsin.",
+                desc_en: "Generates beautiful, formatted presentation decks from a text prompt in seconds.",
+                note_tr: "Krediniz bittiğinde gizli sekmede yeni maille döngüye girebilirsiniz.",
+                note_en: "Generous initial credits. Reset via incognito and temp email.",
+                taktik_tr: "💡 **Prompt:** 'Yapay zeka ile iş kurmak isteyenler için 8 slaytlık modern rehber.'",
+                taktik_en: "💡 **Prompt:** '8-slide modern pitch deck on AI tools, dark theme, action-oriented.'",
                 url: "https://gamma.app",
                 icon: "presentation"
             },
@@ -525,11 +729,15 @@
                 id: "ilovepdf",
                 name: "iLovePDF",
                 cat: "pdf",
+                baseVotes: 68,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["pdf", "düzenle", "birleştir", "şifre"],
-                desc: "PDF bölme, birleştirme, Word'e çevirme dertlerini bitirir.",
-                note: "Üyelik bile istemez, tamamen bedavadır.",
-                taktik: "💡 **İpucu:** Şifreli PDF'leri 'Unlock PDF' sekmesine sürükleyerek korumasını kaldırabilirsiniz.",
+                keywords: ["pdf", "düzenle", "birleştir", "şifre", "merge"],
+                desc_tr: "PDF bölme, birleştirme, Word'e çevirme dertlerini bitirir.",
+                desc_en: "All-in-one suite to merge, split, compress, and convert PDF files.",
+                note_tr: "Üyelik bile istemez, tamamen bedavadır.",
+                note_en: "No registration required, completely free for everyday tasks.",
+                taktik_tr: "💡 **İpucu:** Şifreli PDF'leri 'Unlock PDF' sekmesine sürükleyerek korumasını kaldırın.",
+                taktik_en: "💡 **Pro Tip:** Drag password-protected PDFs to 'Unlock PDF' to remove locks.",
                 url: "https://www.ilovepdf.com",
                 icon: "file-text"
             },
@@ -537,11 +745,15 @@
                 id: "deepl",
                 name: "DeepL Write",
                 cat: "pdf",
+                baseVotes: 81,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["çeviri", "metin", "yazım denetimi", "chatgpt"],
-                desc: "Acemi cümleleri kurumsal ve akıcı bir dile çevirir.",
-                note: "ChatGPT gibi robotik yazmaz. Günlük kullanımı ücretsizdir.",
-                taktik: "💡 **İpucu:** Metni yapıştırdıktan sonra sağ taraftan 'Academic' veya 'Business' stilini seçerek resmiyeti ayarlayın.",
+                keywords: ["çeviri", "metin", "yazım denetimi", "chatgpt", "translate"],
+                desc_tr: "Acemi cümleleri kurumsal ve akıcı bir dile çevirir.",
+                desc_en: "Fixes grammar, tone, and sentence structure for natural human writing.",
+                note_tr: "ChatGPT gibi robotik yazmaz. Günlük kullanımı ücretsizdir.",
+                note_en: "Avoids robotic AI phrasing. Free for daily text refining.",
+                taktik_tr: "💡 **İpucu:** Metni yapıştırdıktan sonra 'Business' stilini seçerek resmiyeti ayarlayın.",
+                taktik_en: "💡 **Pro Tip:** Switch tone to 'Academic' or 'Business' for polished emails.",
                 url: "https://www.deepl.com/write",
                 icon: "edit-3"
             },
@@ -549,11 +761,15 @@
                 id: "claude",
                 name: "Claude 3.5",
                 cat: "kod",
+                baseVotes: 156,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["chatgpt", "yazılım", "kod", "metin"],
-                desc: "Kod yazma ve doğal dilde ChatGPT'nin şu anki en büyük rakibi.",
-                note: "Yazılımcılar ve içerik üreticileri için gizli hazine.",
-                taktik: "💡 **Prompt:** 'Bu koddaki hataları ayıkla, clean code standartlarına göre optimize et ve her satıra Türkçe yorum ekle.'",
+                keywords: ["chatgpt", "yazılım", "kod", "metin", "coding"],
+                desc_tr: "Kod yazma ve doğal dilde ChatGPT'nin şu anki en büyük rakibi.",
+                desc_en: "The premier AI model for clean code generation and natural writing.",
+                note_tr: "Yazılımcılar ve içerik üreticileri için gizli hazine.",
+                note_en: "Unmatched performance for refactoring code and complex analysis.",
+                taktik_tr: "💡 **Prompt:** 'Bu koddaki hataları ayıkla ve clean code standartlarına göre düzenle.'",
+                taktik_en: "💡 **Prompt:** 'Debug this code snippet and refactor it following clean code standards.'",
                 url: "https://claude.ai",
                 icon: "cpu"
             },
@@ -561,11 +777,15 @@
                 id: "10minutemail",
                 name: "10 Minute Mail",
                 cat: "hile",
+                baseVotes: 104,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["mail", "e-posta", "deneme", "fake", "geçici"],
-                desc: "10 dakikalığına geçici e-posta adresi verir.",
-                note: "Diğer araçlarda sınırsız ücretsiz hesap açmanın anahtarıdır.",
-                taktik: "💡 **İpucu:** Sayfayı kapatmayın! Yeni sekmede ücretsiz hesabı açın, doğrulama kodu 5 saniye içinde bu sayfaya düşer.",
+                keywords: ["mail", "e-posta", "deneme", "fake", "geçici", "temp mail"],
+                desc_tr: "10 dakikalığına geçici e-posta adresi verir.",
+                desc_en: "Provides temporary throwaway email addresses to bypass trial signups.",
+                note_tr: "Diğer araçlarda sınırsız ücretsiz hesap açmanın anahtarıdır.",
+                note_en: "Essential tool to reset free trial limits across AI platforms.",
+                taktik_tr: "💡 **İpucu:** Sayfayı kapatmayın! Verification kodu 5 saniyede bu sayfaya düşer.",
+                taktik_en: "💡 **Pro Tip:** Keep tab open; confirmation codes appear automatically in seconds.",
                 url: "https://10minutemail.com",
                 icon: "mail"
             },
@@ -573,11 +793,15 @@
                 id: "goblintools",
                 name: "Goblin.tools",
                 cat: "hile",
+                baseVotes: 47,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["plan", "görev", "adhd", "karmaşık"],
-                desc: "Gözünüzde büyüyen karmaşık işleri adım adım küçük görevlere böler.",
-                note: "Odaklanma sorunu yaşayanlar için %100 ücretsiz hediye.",
-                taktik: "💡 **İpucu:** 'Baharat Seviyesi'ni (Spiciness) 5 yaparsanız görevi çocuk adımlarına kadar parçalar.",
+                keywords: ["plan", "görev", "adhd", "karmaşık", "task"],
+                desc_tr: "Gözünüzde büyüyen karmaşık işleri adım adım küçük görevlere böler.",
+                desc_en: "Breaks down overwhelming tasks into bite-sized actionable steps.",
+                note_tr: "Odaklanma sorunu yaşayanlar için %100 ücretsiz hediye.",
+                note_en: "100% free tool designed for productivity and focus support.",
+                taktik_tr: "💡 **İpucu:** 'Spiciness' seviyesini 5 yaparsanız görevi çocuk adımlarına böler.",
+                taktik_en: "💡 **Pro Tip:** Set 'Spiciness' level to 5 to break tasks into tiny sub-tasks.",
                 url: "https://goblin.tools",
                 icon: "list-todo"
             },
@@ -585,26 +809,87 @@
                 id: "excalidraw",
                 name: "Excalidraw",
                 cat: "hile",
+                baseVotes: 61,
                 modes: ["ogrenci", "girisimci"],
-                keywords: ["şema", "çizim", "tahta", "harita"],
-                desc: "Fikirlerinizi el çizimi hissi veren sanal tahtada tasarlayın.",
-                note: "Üyelik yok. Bağlantıyı paylaşıp arkadaşlarınızla canlı çizebilirsiniz.",
-                taktik: "💡 **İpucu:** Sol üstteki 'Live Collaboration' butonuna basıp linki kopyalayın, arkadaşlarınızla aynı tahtada canlı çalışın.",
+                keywords: ["şema", "çizim", "tahta", "harita", "whiteboard"],
+                desc_tr: "Fikirlerinizi el çizimi hissi veren sanal tahtada tasarlayın.",
+                desc_en: "Virtual hand-drawn style whiteboard for brainstorming and diagramming.",
+                note_tr: "Üyelik yok. Bağlantıyı paylaşıp arkadaşlarınızla canlı çizebilirsiniz.",
+                note_en: "No sign-up required. Share live links to collaborate instantly.",
+                taktik_tr: "💡 **İpucu:** 'Live Collaboration' butonuna basıp linki arkadaşınızla paylaşın.",
+                taktik_en: "💡 **Pro Tip:** Click 'Live Collaboration' to draw together in real-time.",
                 url: "https://excalidraw.com",
                 icon: "pen-tool"
             }
         ];
 
         let favorites = JSON.parse(localStorage.getItem('treox_favs') || '[]');
+        let userUpvotes = JSON.parse(localStorage.getItem('treox_upvotes') || '{}');
+        let currentLang = localStorage.getItem('treox_lang') || 'tr';
+        let currentTheme = localStorage.getItem('treox_theme') || 'dark';
         let currentMode = 'all';
         let currentCat = 'all';
+        let deferredPrompt;
+
+        function applyLanguage() {
+            const lang = translations[currentLang];
+            document.getElementById('langLabel').innerText = currentLang === 'tr' ? 'EN' : 'TR';
+            document.getElementById('txtBrandSub').innerText = lang.brandSub;
+            document.getElementById('txtWizardTitle').innerText = lang.wizardTitle;
+            document.getElementById('searchInput').placeholder = lang.searchPlaceholder;
+            document.getElementById('txtSurprise').innerText = lang.surpriseBtn;
+            document.getElementById('txtTallyHead').innerText = lang.tallyHead;
+            document.getElementById('txtTallySub').innerText = lang.tallySub;
+            document.getElementById('txtPwa').innerText = lang.pwaText;
+            document.getElementById('pwaBtn').innerText = lang.pwaInstall;
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (lang[key]) el.innerText = lang[key];
+            });
+
+            applyFilters();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'tr' ? 'en' : 'tr';
+            localStorage.setItem('treox_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyTheme() {
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').setAttribute('data-lucide', 'moon');
+                document.getElementById('themeLabel').innerText = 'Karanlık';
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('themeIcon').setAttribute('data-lucide', 'sun');
+                document.getElementById('themeLabel').innerText = 'Aydınlık';
+            }
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('treox_theme', currentTheme);
+            applyTheme();
+        }
 
         function renderTools(list) {
             const grid = document.getElementById('toolsGrid');
             grid.innerHTML = '';
+            const lang = translations[currentLang];
 
             list.forEach(tool => {
                 const isFav = favorites.includes(tool.id);
+                const hasUpvoted = !!userUpvotes[tool.id];
+                const votesCount = tool.baseVotes + (hasUpvoted ? 1 : 0);
+
+                const desc = currentLang === 'en' ? tool.desc_en : tool.desc_tr;
+                const note = currentLang === 'en' ? tool.note_en : tool.note_tr;
+                const taktik = currentLang === 'en' ? tool.taktik_en : tool.taktik_tr;
+
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -613,26 +898,29 @@
                             <div class="card-title">
                                 <i data-lucide="${tool.icon}"></i> ${tool.name}
                             </div>
-                            <span class="badge"><i data-lucide="check-circle" size="12"></i> Çalışıyor</span>
+                            <span class="badge"><i data-lucide="check-circle" size="12"></i> ${lang.working}</span>
                         </div>
-                        <div class="card-desc">${tool.desc}</div>
-                        <div class="card-note"><strong>Dürüst Not:</strong> ${tool.note}</div>
+                        <div class="card-desc">${desc}</div>
+                        <div class="card-note"><strong>${lang.honestNote}</strong> ${note}</div>
                         
                         <div class="taktik-box" id="taktik-${tool.id}">
                             <div class="taktik-header" onclick="toggleTaktik('${tool.id}')">
-                                <span>⚡ Örnek Prompt & Taktik</span>
+                                <span>${lang.promptTaktik}</span>
                                 <i data-lucide="chevron-down" size="14"></i>
                             </div>
-                            <div class="taktik-content">${tool.taktik}</div>
+                            <div class="taktik-content">${taktik}</div>
                         </div>
                     </div>
                     <div class="card-actions">
-                        <a href="${tool.url}" target="_blank" class="btn-link">Araca Git</a>
-                        <button class="btn-icon ${isFav ? 'active' : ''}" onclick="toggleFav('${tool.id}')">
-                            <i data-lucide="star"></i>
+                        <a href="${tool.url}" target="_blank" class="btn-link">${lang.goToTool}</a>
+                        <button class="btn-icon ${hasUpvoted ? 'active-upvote' : ''}" onclick="toggleUpvote('${tool.id}')">
+                            <i data-lucide="heart" size="14"></i> ${votesCount}
+                        </button>
+                        <button class="btn-icon ${isFav ? 'active-fav' : ''}" onclick="toggleFav('${tool.id}')">
+                            <i data-lucide="star" size="14"></i>
                         </button>
                         <button class="btn-icon" onclick="shareWhatsApp('${tool.name}', '${tool.url}')">
-                            <i data-lucide="share-2"></i>
+                            <i data-lucide="share-2" size="14"></i>
                         </button>
                     </div>
                 `;
@@ -644,6 +932,26 @@
         function toggleTaktik(id) {
             const box = document.getElementById(`taktik-${id}`);
             box.classList.toggle('open');
+        }
+
+        function toggleUpvote(id) {
+            if (userUpvotes[id]) {
+                delete userUpvotes[id];
+            } else {
+                userUpvotes[id] = true;
+            }
+            localStorage.setItem('treox_upvotes', JSON.stringify(userUpvotes));
+            applyFilters();
+        }
+
+        function toggleFav(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(f => f !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('treox_favs', JSON.stringify(favorites));
+            applyFilters();
         }
 
         function filterMode(mode, btn) {
@@ -671,39 +979,63 @@
             const filtered = tools.filter(t => {
                 const matchesMode = currentMode === 'all' || t.modes.includes(currentMode);
                 const matchesCat = currentCat === 'all' || t.cat === currentCat;
-                const matchesQuery = t.name.toLowerCase().includes(query) ||
-                                     t.desc.toLowerCase().includes(query) ||
-                                     t.keywords.some(k => k.toLowerCase().includes(query));
-                return matchesMode && matchesCat && matchesQuery;
+                const nameMatch = t.name.toLowerCase().includes(query);
+                const descMatch = (t.desc_tr + ' ' + t.desc_en).toLowerCase().includes(query);
+                const keyMatch = t.keywords.some(k => k.toLowerCase().includes(query));
+                return matchesMode && matchesCat && (nameMatch || descMatch || keyMatch);
             });
+
+            // En çok oy alanları üstte sırala
+            filtered.sort((a, b) => {
+                const votesA = a.baseVotes + (userUpvotes[a.id] ? 1 : 0);
+                const votesB = b.baseVotes + (userUpvotes[b.id] ? 1 : 0);
+                return votesB - votesA;
+            });
+
             renderTools(filtered);
         }
 
         function searchTools() { applyFilters(); }
 
-        function toggleFav(id) {
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(f => f !== id);
-            } else {
-                favorites.push(id);
-            }
-            localStorage.setItem('treox_favs', JSON.stringify(favorites));
-            applyFilters();
-        }
-
         function shareWhatsApp(name, url) {
-            const text = `Kanka şöyle harika ve ücretsiz bir araç buldum: ${name} -> ${url} (Treox'ta keşfedildi)`;
+            const text = currentLang === 'en'
+                ? `Check out this 100% free tool I found: ${name} -> ${url} (via Treox)`
+                : `Kanka şöyle harika ve ücretsiz bir araç buldum: ${name} -> ${url} (Treox'ta keşfedildi)`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function randomSurprise() {
             const randomIndex = Math.floor(Math.random() * tools.length);
             const randomTool = tools[randomIndex];
-            alert(`🎰 Şansına Bu Çıktı:\n\n${randomTool.name} - ${randomTool.desc}\n\nTamam'a basarak araca gidebilirsin!`);
+            const desc = currentLang === 'en' ? randomTool.desc_en : randomTool.desc_tr;
+            alert(`🎰 ${randomTool.name}\n\n${desc}`);
             window.open(randomTool.url, '_blank');
         }
 
-        renderTools(tools);
+        // PWA Install Event Handler
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaBanner').style.display = 'flex';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    document.getElementById('pwaBanner').style.display = 'none';
+                });
+            }
+        }
+
+        function closePWABanner() {
+            document.getElementById('pwaBanner').style.display = 'none';
+        }
+
+        // Boot
+        applyTheme();
+        applyLanguage();
     </script>
 </body>
 </html>
