@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Treox - Yapay Zeka & Yazılım Cephaneliği</title>
     
+    <!-- Google Search Console Doğrulama Kodu -->
+    <meta name="google-site-verification" content="R1ce0i3cVKy-MCAShR6geHoEd-l0gq_9Yoc0Nv7JW-E" />
+
     <!-- PWA Mobil Uygulama Entegrasyonu -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -61,7 +64,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Top Controls Bar */
         .top-bar {
             display: flex;
             justify-content: flex-end;
@@ -84,9 +86,7 @@
             transition: all 0.2s;
         }
 
-        .control-btn:hover {
-            border-color: var(--accent-blue);
-        }
+        .control-btn:hover { border-color: var(--accent-blue); }
 
         header {
             text-align: center;
@@ -109,7 +109,6 @@
             margin-bottom: 20px;
         }
 
-        /* Mod ve Kategori Butonları */
         .filter-section {
             display: flex;
             flex-direction: column;
@@ -156,7 +155,6 @@
             color: var(--accent-purple);
         }
 
-        /* "Derdini Söyle" Sihirbazı */
         .wizard-section {
             background: var(--wizard-bg);
             border: 1px dashed var(--card-border);
@@ -194,11 +192,8 @@
             transition: all 0.2s;
         }
 
-        .chip-btn:hover {
-            border-color: var(--accent-blue);
-        }
+        .chip-btn:hover { border-color: var(--accent-blue); }
 
-        /* Arama Alanı */
         .search-section {
             display: flex;
             gap: 10px;
@@ -233,7 +228,6 @@
             white-space: nowrap;
         }
 
-        /* Kart Yapısı */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -301,7 +295,6 @@
             margin-bottom: 12px;
         }
 
-        /* Akordeon Taktik Kutusu */
         .taktik-box {
             background: rgba(112, 0, 255, 0.08);
             border: 1px solid rgba(112, 0, 255, 0.2);
@@ -377,7 +370,6 @@
             margin: 0 auto 40px;
         }
 
-        /* PWA Uygulama Yükle Banner */
         .pwa-banner {
             position: fixed;
             bottom: 20px;
@@ -447,14 +439,12 @@
         <div class="brand-sub" id="txtBrandSub">Zolven Tarafından Güçlendirildi • %100 Ücretsiz Cephanelik</div>
         
         <div class="filter-section">
-            <!-- Modlar -->
             <div class="pill-group" id="modeGroup">
                 <button class="filter-btn active" onclick="filterMode('all', this)"><i data-lucide="grid"></i> <span data-key="modeAll">Tümü</span></button>
                 <button class="filter-btn" onclick="filterMode('ogrenci', this)"><i data-lucide="graduation-cap"></i> <span data-key="modeStudent">Öğrenci</span></button>
                 <button class="filter-btn" onclick="filterMode('girisimci', this)"><i data-lucide="briefcase"></i> <span data-key="modeEntrepreneur">Girişimci</span></button>
             </div>
 
-            <!-- Kategoriler -->
             <div class="pill-group" id="catGroup">
                 <button class="filter-btn cat-btn active" onclick="filterCategory('all', this)" data-key="catAll">Hepsi</button>
                 <button class="filter-btn cat-btn" onclick="filterCategory('gorsel', this)" data-key="catVisual">🎨 Görsel & Tasarım</button>
@@ -465,7 +455,6 @@
             </div>
         </div>
 
-        <!-- "Derdini Söyle" Sihirbazı -->
         <div class="wizard-section">
             <div class="wizard-title" id="txtWizardTitle">🎯 Ne Yapmak İstiyorsun? (Hızlı Seçim)</div>
             <div class="wizard-chips" id="wizardChips">
@@ -492,7 +481,6 @@
         <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
     </div>
 
-    <!-- PWA Install Banner -->
     <div class="pwa-banner" id="pwaBanner" style="display: none;">
         <i data-lucide="smartphone" size="18"></i>
         <span class="pwa-text" id="txtPwa">Treox'u Telefona Yükle!</span>
@@ -985,7 +973,6 @@
                 return matchesMode && matchesCat && (nameMatch || descMatch || keyMatch);
             });
 
-            // En çok oy alanları üstte sırala
             filtered.sort((a, b) => {
                 const votesA = a.baseVotes + (userUpvotes[a.id] ? 1 : 0);
                 const votesB = b.baseVotes + (userUpvotes[b.id] ? 1 : 0);
@@ -1012,7 +999,6 @@
             window.open(randomTool.url, '_blank');
         }
 
-        // PWA Install Event Handler
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -1033,7 +1019,6 @@
             document.getElementById('pwaBanner').style.display = 'none';
         }
 
-        // Boot
         applyTheme();
         applyLanguage();
     </script>
