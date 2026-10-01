@@ -87,7 +87,7 @@
 
   <div id="toastContainer"></div>
 
-  <!-- BAKIM MODU EKRANI -->
+  <!-- BAKIM EKRANI -->
   <div id="maintenanceScreen">
     <div class="m-box">
       <span class="m-icon">🛠</span>
@@ -151,7 +151,7 @@
     const ADMIN_PIN = "1234";
     let isAdmin = false;
 
-    // DOĞRUDAN SİSTEME GÖMÜLÜ TÜM AI ARAÇLARI LISTESI
+    // SABİT ARAÇ LİSTESİ
     const HARDCODED_TOOLS = [
       { id: "leonardo", ad: "Leonardo AI", kategori: "tasarım", tag: "Görsel", link: "https://leonardo.ai", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.", likes: 104 },
       { id: "perplexity", ad: "Perplexity AI", kategori: "ogrenci", tag: "Araştırma", link: "https://perplexity.ai", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler.", likes: 89 },
@@ -168,10 +168,9 @@
       { id: "v0", ad: "v0.dev", kategori: "tasarım", tag: "Arayüz", link: "https://v0.dev", desc: "Metin açıklamalarından eksiksiz React ve Tailwind arayüz bileşenleri oluşturun.", likes: 98 }
     ];
 
-    let tools = [...HARDCODED_TOOLS];
+    let tools = [];
     let currentCategory = 'tümü';
 
-    // YÖNETİCİ KONTROLÜ
     function checkMaintenance() {
       if (localStorage.getItem('treoxAdmin') === 'true') {
         isAdmin = true;
@@ -203,15 +202,29 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // MÜKERRER (BENZER) KAYITLARI TEMİZLEYEN DEDUPLICATION ALGORİTMASI
+    function deduplicateTools(rawList) {
+      const uniqueTools = [];
+      const seenNames = new Set();
+
+      for (const item of rawList) {
+        const nameKey = (item.ad || item.name || '').trim().toLowerCase();
+        if (nameKey && !seenNames.has(nameKey)) {
+          seenNames.add(nameKey);
+          uniqueTools.push(item);
+        }
+      }
+      return uniqueTools;
+    }
+
     function listenFirestore() {
       db.collection('tools').onSnapshot((snapshot) => {
         let dynamicTools = [];
         snapshot.forEach((doc) => dynamicTools.push({ id: doc.id, ...doc.data() }));
-        if (dynamicTools.length > 0) {
-          tools = [...HARDCODED_TOOLS, ...dynamicTools];
-        } else {
-          tools = [...HARDCODED_TOOLS];
-        }
+        
+        // Veritabanından gelenler ile kod içindeki sabit verileri birleştirip benzersiz yapıyoruz
+        const combined = [...dynamicTools, ...HARDCODED_TOOLS];
+        tools = deduplicateTools(combined);
         filterTools();
       });
     }
@@ -324,6 +337,7 @@
 
     window.onload = () => {
       checkMaintenance();
+      tools = deduplicateTools(HARDCODED_TOOLS);
       renderTools();
       listenFirestore();
     };
