@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Treox - Ücretsiz AI Cephaneliği</title>
   
-  <!-- 5. PWA (MOBİL UYGULAMA) META ETİKETLERİ -->
+  <!-- PWA META ETİKETLERİ -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0f19">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Treox AI">
+
+  <!-- FIREBASE SDK (CANLI VERİTABANI İÇİN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
   <style>
     /* TEMA DEĞİŞKENLERİ */
@@ -73,11 +77,9 @@
     .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
     .filter-btn.active, .filter-btn:hover { background: var(--neon-purple); border-color: var(--neon-purple); color: white; }
 
-    /* 2. SIRALAMA SELECT DROPDOWN */
     .sort-box { display: flex; align-items: center; gap: 8px; }
     .sort-select { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color); padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; outline: none; cursor: pointer; }
 
-    /* 4. DİNANİK ARAÇ SAYACI */
     .counter-bar { max-width: 1200px; margin: 0 auto 15px; padding: 0 20px; font-size: 13px; color: var(--text-muted); font-weight: 600; }
 
     /* KART IZGARASI */
@@ -111,7 +113,7 @@
     .icon-btn.liked { color: #ef4444; border-color: #ef4444; }
     .icon-btn.starred { color: #facc15; border-color: #facc15; }
 
-    /* 3. MODAL POP-UP (ARAÇ ÖNER) */
+    /* MODAL POP-UP */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
     .modal-box { background: var(--card-bg); border: 1px solid var(--neon-purple); width: 100%; max-width: 450px; border-radius: 18px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; }
     .close-modal { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; }
@@ -167,7 +169,7 @@
       <button class="filter-btn" onclick="setCategory('favoriler')">⭐ Kaydedilenler</button>
     </div>
 
-    <!-- 2. SIRALAMA -->
+    <!-- SIRALAMA -->
     <div class="sort-box">
       <span>Sırala:</span>
       <select id="sortSelect" class="sort-select" onchange="filterTools()">
@@ -178,13 +180,13 @@
     </div>
   </div>
 
-  <!-- 4. DİNAMİK ARAÇ SAYACI -->
+  <!-- DİNAMİK ARAÇ SAYACI -->
   <div class="counter-bar" id="toolCounter">Görüntülenen Araç: 0</div>
 
   <!-- KART IZGARASI -->
   <div class="card-grid" id="toolGrid"></div>
 
-  <!-- 3. YENİ ARAÇ ÖNER MODALI -->
+  <!-- ARAÇ ÖNER MODALI -->
   <div class="modal-overlay" id="suggestModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeModal()">✖</button>
@@ -217,28 +219,60 @@
   </div>
 
   <script>
+    // -----------------------------------------------------------------
+    // FIREBASE AYARLARI (Buradaki bilgileri Firebase Konsolundan Alıp Yapıştır)
+    // -----------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "SİZİN_API_KEY_DEGERİNİZ",
+      authDomain: "sizin-projeniz.firebaseapp.com",
+      projectId: "sizin-projeniz",
+      storageBucket: "sizin-projeniz.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    // Firebase Başlat
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // -----------------------------------------------------------------
+    // ARAÇ LİSTESİ
+    // -----------------------------------------------------------------
     const tools = [
-      { id: 1, ad: "10 Minute Mail", kategori: "araclar", desc: "10 dakikalığına geçici e-posta adresi verir.", durustNot: "Diğer araçlarda sınırsız ücretsiz hesap açmanın anahtarıdır.", prompt: "Sınırsız deneme hesabı açmak için temp mail al ve gizli sekmede kaydol.", link: "https://10minutemail.com", likes: 104 },
-      { id: 2, ad: "Adobe Podcast AI", kategori: "ses", desc: "Rüzgarlı ses kaydını bile 10.000 TL'lik stüdyo mikrofonu kalitesine getirir.", durustNot: "Sadece ücretsiz Adobe hesabı (Google ile) açmanız yeterlidir.", prompt: "Ses kaydını (.mp3/.wav) yükle, Enhance Speech butonunu aktif et ve indir.", link: "https://podcast.adobe.com/enhance", likes: 95 },
-      { id: 3, ad: "Gamma.app", kategori: "ogrenci", desc: "Sadece konuyu yazın, 10 saniyede tasarımlı sunum üretsin.", durustNot: "Krediniz bittiğinde gizli sekmede yeni maille döngüye girebilirsiniz.", prompt: "Sunum konusu: 'Yapay Zekanın Geleceği' -> 8 slaytlık Türkçe sunum tasarla.", link: "https://gamma.app", likes: 128 },
-      { id: 4, ad: "Leonardo AI", kategori: "tasarım", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.", durustNot: "Her gün 150 ücretsiz kredi yenilenir, ödeme yapmana hiç gerek kalmaz.", prompt: "Cyberpunk style portrait of a futuristic hacker, neon violet lighting, 8k resolution --v 5", link: "https://leonardo.ai", likes: 156 },
-      { id: 5, ad: "Perplexity AI", kategori: "ogrenci", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler sunar.", durustNot: "Google aramalarından katbekat hızlıdır, doğru bilgiyi anında kaynak linkiyle verir.", prompt: "Bu konuyu akademisyen gözüyle araştır ve bana kaynaklarıyla 3 ana maddede özetle.", link: "https://perplexity.ai", likes: 142 },
-      { id: 6, ad: "Suno AI", kategori: "ses", desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin.", durustNot: "Günlük ücretsiz haklarınla tarz seçip sözleri ChatGPT'ye yazdırarak şarkı yapabilirsin.", prompt: "Enerjik, synthwave ritimli, Türkçe pop vokalli bir yaz şarkısı üret.", link: "https://suno.com", likes: 180 },
-      { id: 7, ad: "Upscayl", kategori: "tasarım", desc: "Bulanık veya düşük çözünürlüklü fotoğrafları yapay zeka ile cam gibi netleştir.", durustNot: "Açık kaynaklı ve tamamen ücretsizdir, bilgisayarına indirip internetsiz de kullanabilirsin.", prompt: "Düşük çözünürlüklü eski görseli yükle ve 4x Digital Art modelini seçip netleştir.", link: "https://upscayl.org", likes: 110 },
-      { id: 8, ad: "ChatPDF", kategori: "ogrenci", desc: "Ders notlarını veya uzun PDF'leri yükle, içinden istediğin soruyu bota sor.", durustNot: "Sınav haftası 100 sayfalık slaytları 1 dakikada özetletmek için en iyi asistandır.", prompt: "Bu PDF belgesindeki vize sınavında çıkabilecek en önemli 5 anahtar soruyu çıkar.", link: "https://chatpdf.com", likes: 135 },
-      { id: 9, ad: "CapCut PC", kategori: "ses", desc: "Yapay zeka destekli otomatik altyazı ve video kurgu aracı.", durustNot: "Masaüstü sürümünde otomatik Türkçe altyazı üretme tamamen ücretsizdir.", prompt: "Metin sekmesinden 'Otomatik Altyazılar' seçeneğine basıp konuşmaları neon yazılara çevir.", link: "https://capcut.com", likes: 165 },
-      { id: 10, ad: "Clipdrop", kategori: "tasarım", desc: "Fotoğraftan nesne silme, arka plan değiştirme ve ışıklandırma araçları.", durustNot: "İstemediğin kişileri veya yazıları fotoğraftan bozmadan tek tıkla siler.", prompt: "Cleanup modunda silmek istediğin nesnenin üzerini fırçayla boya ve çıkar.", link: "https://clipdrop.co", likes: 98 }
+      { id: 1, ad: "10 Minute Mail", kategori: "araclar", desc: "10 dakikalığına geçici e-posta adresi verir.", durustNot: "Diğer araçlarda sınırsız ücretsiz hesap açmanın anahtarıdır.", prompt: "Sınırsız deneme hesabı açmak için temp mail al ve gizli sekmede kaydol.", link: "https://10minutemail.com", likes: 0 },
+      { id: 2, ad: "Adobe Podcast AI", kategori: "ses", desc: "Rüzgarlı ses kaydını bile 10.000 TL'lik stüdyo mikrofonu kalitesine getirir.", durustNot: "Sadece ücretsiz Adobe hesabı (Google ile) açmanız yeterlidir.", prompt: "Ses kaydını (.mp3/.wav) yükle, Enhance Speech butonunu aktif et ve indir.", link: "https://podcast.adobe.com/enhance", likes: 0 },
+      { id: 3, ad: "Gamma.app", kategori: "ogrenci", desc: "Sadece konuyu yazın, 10 saniyede tasarımlı sunum üretsin.", durustNot: "Krediniz bittiğinde gizli sekmede yeni maille döngüye girebilirsiniz.", prompt: "Sunum konusu: 'Yapay Zekanın Geleceği' -> 8 slaytlık Türkçe sunum tasarla.", link: "https://gamma.app", likes: 0 },
+      { id: 4, ad: "Leonardo AI", kategori: "tasarım", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.", durustNot: "Her gün 150 ücretsiz kredi yenilenir, ödeme yapmana hiç gerek kalmaz.", prompt: "Cyberpunk style portrait of a futuristic hacker, neon violet lighting, 8k resolution --v 5", link: "https://leonardo.ai", likes: 0 },
+      { id: 5, ad: "Perplexity AI", kategori: "ogrenci", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler sunar.", durustNot: "Google aramalarından katbekat hızlıdır, doğru bilgiyi anında kaynak linkiyle verir.", prompt: "Bu konuyu akademisyen gözüyle araştır ve bana kaynaklarıyla 3 ana maddede özetle.", link: "https://perplexity.ai", likes: 0 },
+      { id: 6, ad: "Suno AI", kategori: "ses", desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin.", durustNot: "Günlük ücretsiz haklarınla tarz seçip sözleri ChatGPT'ye yazdırarak şarkı yapabilirsin.", prompt: "Enerjik, synthwave ritimli, Türkçe pop vokalli bir yaz şarkısı üret.", link: "https://suno.com", likes: 0 },
+      { id: 7, ad: "Upscayl", kategori: "tasarım", desc: "Bulanık veya düşük çözünürlüklü fotoğrafları yapay zeka ile cam gibi netleştir.", durustNot: "Açık kaynaklı ve tamamen ücretsizdir, bilgisayarına indirip internetsiz de kullanabilirsin.", prompt: "Düşük çözünürlüklü eski görseli yükle ve 4x Digital Art modelini seçip netleştir.", link: "https://upscayl.org", likes: 0 },
+      { id: 8, ad: "ChatPDF", kategori: "ogrenci", desc: "Ders notlarını veya uzun PDF'leri yükle, içinden istediğin soruyu bota sor.", durustNot: "Sınav haftası 100 sayfalık slaytları 1 dakikada özetletmek için en iyi asistandır.", prompt: "Bu PDF belgesindeki vize sınavında çıkabilecek en önemli 5 anahtar soruyu çıkar.", link: "https://chatpdf.com", likes: 0 },
+      { id: 9, ad: "CapCut PC", kategori: "ses", desc: "Yapay zeka destekli otomatik altyazı ve video kurgu aracı.", durustNot: "Masaüstü sürümünde otomatik Türkçe altyazı üretme tamamen ücretsizdir.", prompt: "Metin sekmesinden 'Otomatik Altyazılar' seçeneğine basıp konuşmaları neon yazılara çevir.", link: "https://capcut.com", likes: 0 },
+      { id: 10, ad: "Clipdrop", kategori: "tasarım", desc: "Fotoğraftan nesne silme, arka plan değiştirme ve ışıklandırma araçları.", durustNot: "İstemediğin kişileri veya yazıları fotoğraftan bozmadan tek tıkla siler.", prompt: "Cleanup modunda silmek istediğin nesnenin üzerini fırçayla boya ve çıkar.", link: "https://clipdrop.co", likes: 0 }
     ];
 
     let currentCategory = 'tümü';
     let favorites = JSON.parse(localStorage.getItem('treoxFavs')) || [];
     let userLikedList = JSON.parse(localStorage.getItem('treoxLikes')) || [];
 
+    // CANLI GERÇEK BEĞENİLERİ VERİTABANINDAN DİNLE
+    function listenRealLikes() {
+      db.collection('likes').onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const toolId = parseInt(doc.id.replace('tool_', ''));
+          const toolData = tools.find(t => t.id === toolId);
+          if (toolData) {
+            toolData.likes = doc.data().count || 0;
+          }
+        });
+        filterTools();
+      });
+    }
+
     function renderTools(filterText = '') {
       const grid = document.getElementById('toolGrid');
       grid.innerHTML = ''; 
 
-      // 1. Filtreleme
       let filtered = tools.filter(tool => {
         const matchesSearch = tool.ad.toLowerCase().includes(filterText) || 
                               tool.desc.toLowerCase().includes(filterText) ||
@@ -250,7 +284,6 @@
         return matchesSearch && matchesCategory;
       });
 
-      // 2. SIRALAMA MANTIĞI
       const sortType = document.getElementById('sortSelect').value;
       if (sortType === 'popular') {
         filtered.sort((a, b) => b.likes - a.likes);
@@ -260,10 +293,8 @@
         filtered.sort((a, b) => b.id - a.id);
       }
 
-      // 4. DİNAMİK ARAÇ SAYACINI GÜNCELLEME
       document.getElementById('toolCounter').innerText = `Toplam ${tools.length} araç arasından ${filtered.length} tanesi listeleniyor`;
 
-      // Kartları Çizdirme
       filtered.forEach(tool => {
         const isFav = favorites.includes(tool.id);
         const isLiked = userLikedList.includes(tool.id);
@@ -323,17 +354,21 @@
       filterTools();
     }
 
-    function toggleLike(id) {
-      const tool = tools.find(t => t.id === id);
+    // GERÇEK VERİTABANI İLE BEĞENİ YÖNETİMİ
+    async function toggleLike(id) {
+      const docRef = db.collection('likes').doc(`tool_${id}`);
+      
       if (userLikedList.includes(id)) {
+        // Beğeniyi geri al
         userLikedList = userLikedList.filter(lId => lId !== id);
-        tool.likes--;
+        await docRef.set({ count: firebase.firestore.FieldValue.increment(-1) }, { merge: true });
       } else {
+        // Beğeni ekle
         userLikedList.push(id);
-        tool.likes++;
+        await docRef.set({ count: firebase.firestore.FieldValue.increment(1) }, { merge: true });
       }
+      
       localStorage.setItem('treoxLikes', JSON.stringify(userLikedList));
-      filterTools();
     }
 
     function shareTool(ad, link) {
@@ -356,20 +391,27 @@
       document.getElementById('themeBtn').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 
-    // 3. MODAL POP-UP İŞLEMLERİ
     function openModal() { document.getElementById('suggestModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('suggestModal').style.display = 'none'; }
     function submitSuggestion() {
       const name = document.getElementById('suggestName').value;
       if (!name) { alert("Lütfen araç adını girin."); return; }
-      alert(`Teşekkürler! '${name}' incelemeye alındı.`);
+      
+      // Öneriyi de veritabanına kaydet
+      db.collection('suggestions').add({
+        name: name,
+        url: document.getElementById('suggestUrl').value,
+        desc: document.getElementById('suggestDesc').value,
+        date: new Date()
+      });
+
+      alert(`Teşekkürler! '${name}' ekibimize ulaştı.`);
       document.getElementById('suggestName').value = '';
       document.getElementById('suggestUrl').value = '';
       document.getElementById('suggestDesc').value = '';
       closeModal();
     }
 
-    // BOT WIDGET İŞLEMLERİ
     function toggleChat() {
       const chat = document.getElementById('chatWindow');
       chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
@@ -386,14 +428,9 @@
       document.getElementById('chatBody').innerHTML += `<div class="bot-msg" style="margin-top:10px;">${res}</div>`;
     }
 
-    // 5. PWA SERVICE WORKER KAYDI
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
-      });
-    }
-
-    window.onload = () => renderTools();
+    window.onload = () => {
+      listenRealLikes();
+    };
   </script>
 </body>
 </html>
