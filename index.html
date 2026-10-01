@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Treox - AI Cephaneliği (Bakım Modu)</title>
+  <title>Treox - AI Cephaneliği</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0f19">
@@ -44,13 +44,11 @@
     .logo span { color: var(--neon-purple); }
     .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-suggest-tool { background: rgba(168, 85, 247, 0.15); border: 1px solid var(--neon-purple); color: var(--text-color); padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; }
-    .btn-seed-tools { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--neon-green); color: #34d399; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-    .btn-seed-tools:hover { background: var(--neon-green); color: white; }
     .theme-toggle { background: var(--card-bg); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 20px; cursor: pointer; color: var(--text-color); }
     
     .hero { text-align: center; padding: 40px 20px 20px; }
-    .hero h1 { font-size: 38px; margin-bottom: 12px; }
-    .hero p { color: var(--text-muted); margin-bottom: 25px; }
+    .hero h1 { font-size: 38px; margin-bottom: 12px; font-weight: 800; }
+    .hero p { color: var(--text-muted); margin-bottom: 25px; font-size: 15px; }
     .search-container { display: flex; justify-content: center; gap: 10px; max-width: 580px; margin: 0 auto; }
     #searchInput { flex: 1; padding: 14px 22px; border-radius: 30px; border: 2px solid var(--neon-blue); background: var(--card-bg); color: var(--text-color); outline: none; }
 
@@ -72,7 +70,7 @@
     .admin-controls { margin-top: 15px; border-top: 1px dashed var(--neon-purple); padding-top: 10px; display: flex; justify-content: flex-end; }
     .btn-delete { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: bold; }
 
-    /* TOAST (BİLDİRİM) SİSTEMİ */
+    /* TOAST SİSTEMİ */
     #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
     .toast { background: var(--card-bg); border-left: 4px solid var(--neon-purple); color: var(--text-color); padding: 12px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size: 14px; font-weight: 600; animation: slideIn 0.3s ease forwards; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -104,7 +102,6 @@
     <header>
       <div class="logo">TREOX<span>.</span></div>
       <div class="header-actions">
-        <button class="btn-seed-tools" onclick="seedDefaultTools()">🚀 Popüler AI Araçlarını Yükle</button>
         <button class="btn-suggest-tool" onclick="openModal()">➕ Araç Ekle</button>
         <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
       </div>
@@ -112,7 +109,7 @@
 
     <section class="hero">
       <h1>Aboneliklere Son: %100 Ücretsiz AI Cephaneliği</h1>
-      <p>İhtiyacın olan yapay zeka aracını ara veya yenilerini keşfet.</p>
+      <p>İhtiyacın olan yapay zeka aracını ara veya rastgele bir tane keşfet.</p>
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Örn: Fotoğraf netleştir, sunum yap..." onkeyup="filterTools()">
       </div>
@@ -154,25 +151,25 @@
     const ADMIN_PIN = "1234";
     let isAdmin = false;
 
-    // OTOMATİK YÜKLENECEK EKSİKSİZ AI ARAÇLARI PAKETİ
-    const DEFAULT_AI_TOOLS = [
-      // EKRAN GÖRÜNTÜSÜNDEKİ ARAÇLAR
-      { ad: "Leonardo AI", kategori: "tasarım", tag: "Görsel", link: "https://leonardo.ai", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir." },
-      { ad: "Perplexity AI", kategori: "ogrenci", tag: "Araştırma", link: "https://perplexity.ai", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler." },
-      { ad: "Suno AI", kategori: "muzik", tag: "Müzik", link: "https://suno.com", desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin." },
-      { ad: "Gamma App", kategori: "ogrenci", tag: "Sunum", link: "https://gamma.app", desc: "Konuyu yaz, saniyeler içinde görsel tasarımıyla birlikte slayt hazırlasın." },
-      
-      // POPÜLER DİĞER AI ARAÇLARI
-      { ad: "ChatGPT", kategori: "araclar", tag: "Sohbet", link: "https://chatgpt.com", desc: "OpenAI tarafından geliştirilen gelişmiş yapay zeka sohbet ve metin üretim asistanı." },
-      { ad: "Claude AI", kategori: "araclar", tag: "Kod & Metin", link: "https://claude.ai", desc: "Kod yazımı ve uzun metin analizinde üstün performans gösteren yapay zeka." },
-      { ad: "Midjourney", kategori: "tasarım", tag: "Görsel", link: "https://midjourney.com", desc: "Metin komutlarından en üst kalitede artistik görseller üreten yapay zeka motoru." },
-      { ad: "Google Gemini", kategori: "araclar", tag: "Asistan", link: "https://gemini.google.com", desc: "Google'ın metin, görsel ve kod işleyebilen çok modlu yapay zekası." },
-      { ad: "Cursor", kategori: "araclar", tag: "Yazılım", link: "https://cursor.com", desc: "Yapay zeka destekli, kod yazmayı ve otomasyonu hızlandıran kod editörü." },
-      { ad: "ElevenLabs", kategori: "muzik", tag: "Ses", link: "https://elevenlabs.io", desc: "Metinden son derece gerçekçi insan sesi üreten ve ses klonlayan platform." },
-      { ad: "Runway ML", kategori: "muzik", tag: "Video", link: "https://runwayml.com", desc: "Metin ve görsellerden sinematik yapay zeka videoları üreten yapay zeka." },
-      { ad: "Canva AI", kategori: "tasarım", tag: "Tasarım", link: "https://canva.com", desc: "Yapay zeka araçlarıyla görsel, sunum ve afiş tasarımlarını hızlıca tamamlayın." },
-      { ad: "v0.dev", kategori: "tasarım", tag: "Arayüz", link: "https://v0.dev", desc: "Metin açıklamalarından eksiksiz React ve Tailwind arayüz bileşenleri oluşturun." }
+    // DOĞRUDAN SİSTEME GÖMÜLÜ TÜM AI ARAÇLARI LISTESI
+    const HARDCODED_TOOLS = [
+      { id: "leonardo", ad: "Leonardo AI", kategori: "tasarım", tag: "Görsel", link: "https://leonardo.ai", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.", likes: 104 },
+      { id: "perplexity", ad: "Perplexity AI", kategori: "ogrenci", tag: "Araştırma", link: "https://perplexity.ai", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler.", likes: 89 },
+      { id: "suno", ad: "Suno AI", kategori: "muzik", tag: "Müzik", link: "https://suno.com", desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin.", likes: 142 },
+      { id: "gamma", ad: "Gamma App", kategori: "ogrenci", tag: "Sunum", link: "https://gamma.app", desc: "Konuyu yaz, saniyeler içinde görsel tasarımıyla birlikte slayt hazırlasın.", likes: 95 },
+      { id: "chatgpt", ad: "ChatGPT", kategori: "araclar", tag: "Sohbet", link: "https://chatgpt.com", desc: "OpenAI tarafından geliştirilen gelişmiş yapay zeka sohbet ve metin üretim asistanı.", likes: 210 },
+      { id: "claude", ad: "Claude AI", kategori: "araclar", tag: "Kod & Metin", link: "https://claude.ai", desc: "Kod yazımı ve uzun metin analizinde üstün performans gösteren yapay zeka.", likes: 175 },
+      { id: "midjourney", ad: "Midjourney", kategori: "tasarım", tag: "Görsel", link: "https://midjourney.com", desc: "Metin komutlarından en üst kalitede artistik görseller üreten yapay zeka motoru.", likes: 190 },
+      { id: "gemini", ad: "Google Gemini", kategori: "araclar", tag: "Asistan", link: "https://gemini.google.com", desc: "Google'ın metin, görsel ve kod işleyebilen çok modlu yapay zekası.", likes: 130 },
+      { id: "cursor", ad: "Cursor", kategori: "araclar", tag: "Yazılım", link: "https://cursor.com", desc: "Yapay zeka destekli, kod yazmayı ve otomasyonu hızlandıran kod editörü.", likes: 115 },
+      { id: "elevenlabs", ad: "ElevenLabs", kategori: "muzik", tag: "Ses", link: "https://elevenlabs.io", desc: "Metinden son derece gerçekçi insan sesi üreten ve ses klonlayan platform.", likes: 160 },
+      { id: "runway", ad: "Runway ML", kategori: "muzik", tag: "Video", link: "https://runwayml.com", desc: "Metin ve görsellerden sinematik yapay zeka videoları üreten yapay zeka.", likes: 120 },
+      { id: "canva", ad: "Canva AI", kategori: "tasarım", tag: "Tasarım", link: "https://canva.com", desc: "Yapay zeka araçlarıyla görsel, sunum ve afiş tasarımlarını hızlıca tamamlayın.", likes: 145 },
+      { id: "v0", ad: "v0.dev", kategori: "tasarım", tag: "Arayüz", link: "https://v0.dev", desc: "Metin açıklamalarından eksiksiz React ve Tailwind arayüz bileşenleri oluşturun.", likes: 98 }
     ];
+
+    let tools = [...HARDCODED_TOOLS];
+    let currentCategory = 'tümü';
 
     // YÖNETİCİ KONTROLÜ
     function checkMaintenance() {
@@ -206,29 +203,17 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let tools = [];
-    let currentCategory = 'tümü';
-
     function listenFirestore() {
       db.collection('tools').onSnapshot((snapshot) => {
-        tools = [];
-        snapshot.forEach((doc) => tools.push({ id: doc.id, ...doc.data() }));
+        let dynamicTools = [];
+        snapshot.forEach((doc) => dynamicTools.push({ id: doc.id, ...doc.data() }));
+        if (dynamicTools.length > 0) {
+          tools = [...HARDCODED_TOOLS, ...dynamicTools];
+        } else {
+          tools = [...HARDCODED_TOOLS];
+        }
         filterTools();
       });
-    }
-
-    // TEK TIKLA TÜM AI ARAÇLARINI YÜKLE
-    async function seedDefaultTools() {
-      if(!confirm("Eksiksiz yapay zeka araçları listenize eklensin mi?")) return;
-      
-      showToast("Araçlar veritabanına ekleniyor...", "info");
-      for (const tool of DEFAULT_AI_TOOLS) {
-        await db.collection('tools').add({
-          ...tool,
-          likes: Math.floor(Math.random() * 50) + 80
-        });
-      }
-      showToast("Tüm araçlar başarıyla yüklendi! 🎉");
     }
 
     function renderTools(filterText = '') {
@@ -241,13 +226,6 @@
         const matchesCategory = currentCategory === 'tümü' || tool.kategori === currentCategory;
         return matchesSearch && matchesCategory;
       });
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px;">
-          Henüz araç yok. Sağ üstteki <b>"🚀 Popüler AI Araçlarını Yükle"</b> butonuna tıklayarak tüm liste araçlarını yükleyebilirsiniz!
-        </div>`;
-        return;
-      }
 
       filtered.forEach(tool => {
         const title = tool.ad || tool.name || 'İsimsiz Araç';
@@ -311,8 +289,10 @@
 
     async function deleteTool(id, title) {
       if(confirm(`"${title}" silinsin mi?`)) {
-        await db.collection('tools').doc(id).delete();
-        showToast(`${title} silindi.`, 'error');
+        tools = tools.filter(t => t.id !== id);
+        try { await db.collection('tools').doc(id).delete(); } catch(e){}
+        filterTools();
+        showToast(`${title} listeden çıkarıldı.`, 'error');
       }
     }
 
@@ -332,6 +312,7 @@
         kategori: kategori,
         link: link,
         desc: desc,
+        tag: "Yeni",
         likes: 1
       });
 
@@ -343,6 +324,7 @@
 
     window.onload = () => {
       checkMaintenance();
+      renderTools();
       listenFirestore();
     };
   </script>
