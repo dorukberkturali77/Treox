@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Treox - Ücretsiz AI Araçları</title>
+  <title>Treox - Ücretsiz AI Cephaneliği</title>
   
   <style>
-    /* 1. TEMA DEĞİŞKENLERİ */
+    /* TEMA DEĞİŞKENLERİ (GECE / GÜNDÜZ) */
     :root {
       --bg-color: #0b0f19;
       --text-color: #ffffff;
       --text-muted: #94a3b8;
-      --card-bg: rgba(30, 41, 59, 0.5);
+      --card-bg: #111827;
       --card-border: rgba(255, 255, 255, 0.08);
+      --note-bg: rgba(6, 182, 212, 0.08);
+      --note-border: #06b6d4;
+      --prompt-bg: rgba(168, 85, 247, 0.1);
+      --prompt-border: rgba(168, 85, 247, 0.3);
       --neon-purple: #a855f7;
       --neon-blue: #3b82f6;
-      --neon-orange: #f97316;
       --bot-gradient: linear-gradient(135deg, #06b6d4, #3b82f6);
     }
 
@@ -25,137 +28,301 @@
       --text-muted: #475569;
       --card-bg: #ffffff;
       --card-border: #e2e8f0;
+      --note-bg: #f0fdf4;
+      --note-border: #10b981;
+      --prompt-bg: #f3e8ff;
+      --prompt-border: #d8b4fe;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; min-height: 100vh; }
     a { text-decoration: none; }
 
-    /* HEADER & HERO */
-    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; }
-    .logo { font-size: 24px; font-weight: 800; letter-spacing: 2px; }
+    /* HEADER */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; max-width: 1200px; margin: 0 auto; }
+    .logo { font-size: 26px; font-weight: 800; letter-spacing: 2px; }
     .logo span { color: var(--neon-purple); }
-    .theme-toggle { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-color); }
+    .theme-toggle { background: var(--card-bg); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 20px; font-size: 18px; cursor: pointer; color: var(--text-color); transition: 0.2s; }
+    .theme-toggle:hover { border-color: var(--neon-purple); }
 
-    .hero { text-align: center; padding: 60px 20px 40px; }
-    .hero h1 { font-size: 36px; margin-bottom: 10px; }
+    /* HERO & ARAMA */
+    .hero { text-align: center; padding: 50px 20px 30px; }
+    .hero h1 { font-size: 38px; font-weight: 800; margin-bottom: 12px; }
     .hero p { color: var(--text-muted); margin-bottom: 30px; font-size: 16px; }
     
-    .search-container { display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; }
-    #searchInput { flex: 1; padding: 15px 20px; border-radius: 30px; border: 2px solid var(--neon-blue); background: var(--card-bg); color: var(--text-color); font-size: 16px; outline: none; }
-    #randomBtn { padding: 0 25px; border-radius: 30px; border: none; background: var(--bot-gradient); color: white; font-size: 20px; cursor: pointer; }
+    .search-container { display: flex; justify-content: center; align-items: center; gap: 10px; max-width: 580px; margin: 0 auto; }
+    #searchInput { flex: 1; padding: 14px 22px; border-radius: 30px; border: 2px solid var(--neon-blue); background: var(--card-bg); color: var(--text-color); font-size: 15px; outline: none; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+    #randomBtn { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--bot-gradient); color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s; }
+    #randomBtn:hover { transform: scale(1.08); }
 
     /* FİLTRELER */
-    .filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
-    .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); cursor: pointer; }
+    .filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; padding: 0 20px; }
+    .filter-btn { padding: 9px 18px; border-radius: 20px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
     .filter-btn.active, .filter-btn:hover { background: var(--neon-purple); border-color: var(--neon-purple); color: white; }
 
-    /* KART TASARIMI */
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
-    .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; border: 1.5px solid var(--card-border); transition: transform 0.3s; }
-    .card:hover { transform: translateY(-5px); }
+    /* KART IZGARASI */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; }
     
-    .badge { align-self: flex-start; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: rgba(128, 128, 128, 0.2); margin-bottom: 14px; }
-    .card h3 { font-size: 20px; margin-bottom: 8px; }
-    .card p { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 22px; flex-grow: 1; }
+    /* KART DETAYLARI (GÖRSELDEKİ YAPININ BİREBİR AYNISI) */
+    .card { background: var(--card-bg); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; border: 1.5px solid var(--card-border); box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: transform 0.2s, border-color 0.2s; }
+    .card:hover { transform: translateY(-4px); border-color: rgba(168, 85, 247, 0.4); }
     
-    /* GÜNCEL KART ALTI BUTONLARI */
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; }
+    .status-badge { font-size: 12px; padding: 4px 10px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.3); }
+    
+    .card-desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 14px; }
+
+    /* DÜRÜST NOT KUTUSU */
+    .honest-note { background: var(--note-bg); border-left: 4px solid var(--note-border); padding: 12px 14px; border-radius: 6px; font-size: 13px; line-height: 1.4; color: var(--text-color); margin-bottom: 14px; }
+    .honest-note strong { color: var(--note-border); display: inline-block; margin-right: 4px; }
+
+    /* ÖRNEK PROMPT & TAKTİK DROPDOWN */
+    .prompt-box { background: var(--prompt-bg); border: 1px solid var(--prompt-border); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+    .prompt-box summary { padding: 10px 14px; font-size: 13px; font-weight: 700; color: var(--neon-purple); cursor: pointer; user-select: none; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .prompt-box summary::-webkit-details-marker { display: none; }
+    .prompt-box summary::after { content: '❯'; font-size: 11px; transition: transform 0.2s; }
+    .prompt-box[open] summary::after { transform: rotate(90deg); }
+    .prompt-content { padding: 0 14px 12px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--prompt-border); margin-top: 6px; padding-top: 8px; font-family: monospace; }
+
+    /* ALT ACTION BUTONLARI */
     .card-footer { display: flex; gap: 8px; align-items: center; margin-top: auto; }
-    .btn-link { flex: 1; text-align: center; padding: 10px; background: var(--neon-blue); color: white; border-radius: 10px; font-weight: bold; font-size: 14px; }
-    .action-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-color); padding: 10px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; transition: 0.2s; }
-    .action-btn:hover { background: rgba(255,255,255,0.1); }
-    .action-btn.starred { color: #facc15; border-color: #facc15; } /* Sarı Yıldız */
+    .btn-visit { flex: 1; text-align: center; padding: 10px; background: #00d2ff; background: linear-gradient(135deg, #00c6ff, #0072ff); color: white; border-radius: 10px; font-weight: 700; font-size: 14px; transition: opacity 0.2s; }
+    .btn-visit:hover { opacity: 0.9; }
+    
+    .icon-btn { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color); padding: 9px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; transition: 0.2s; }
+    .icon-btn:hover { border-color: var(--neon-purple); }
+    .icon-btn.liked { color: #ef4444; border-color: #ef4444; }
+    .icon-btn.starred { color: #facc15; border-color: #facc15; }
 
-    /* TREOX AI WIDGET */
-    .chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
-    .chat-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--bot-gradient); border: none; font-size: 28px; cursor: pointer; color: white; }
-    .chat-window { display: none; position: absolute; bottom: 80px; right: 0; width: 320px; background: var(--card-bg); backdrop-filter: blur(15px); border: 1px solid var(--neon-blue); border-radius: 16px; overflow: hidden; flex-direction: column; }
-    .chat-header { background: var(--bot-gradient); padding: 15px; color: white; font-weight: bold; display: flex; justify-content: space-between; }
+    /* TREOX AI BOT SABİT WIDGET */
+    .chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 9999; }
+    .chat-btn { width: 58px; height: 58px; border-radius: 50%; background: var(--bot-gradient); border: none; font-size: 26px; cursor: pointer; color: white; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5); transition: transform 0.2s; display: flex; align-items: center; justify-content: center; }
+    .chat-btn:hover { transform: scale(1.1); }
+    
+    .chat-window { display: none; position: absolute; bottom: 70px; right: 0; width: 330px; background: var(--card-bg); border: 1px solid var(--neon-blue); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.6); flex-direction: column; }
+    .chat-header { background: var(--bot-gradient); padding: 14px 18px; color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
     .close-chat { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
-    .chat-body { padding: 15px; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
-    .bot-msg { background: rgba(59, 130, 246, 0.2); padding: 10px; border-radius: 10px 10px 10px 0; }
-    .quick-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--text-muted); color: var(--text-color); padding: 8px; border-radius: 8px; cursor: pointer; text-align: left; margin-top:5px; }
-
+    .chat-body { padding: 15px; max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+    .bot-msg { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); padding: 12px; border-radius: 12px 12px 12px 0; color: var(--text-color); }
+    .quick-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: var(--text-color); padding: 9px 12px; border-radius: 8px; cursor: pointer; text-align: left; font-size: 13px; transition: 0.2s; margin-top: 4px; }
+    .quick-btn:hover { background: var(--neon-purple); color: white; border-color: var(--neon-purple); }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header>
     <div class="logo">TREOX<span>.</span></div>
-    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Temayı Değiştir">🌙</button>
   </header>
 
+  <!-- HERO & ARAMA -->
   <section class="hero">
     <h1>Aboneliklere Son: %100 Ücretsiz AI Cephaneliği</h1>
     <p>İhtiyacın olan yapay zeka aracını ara veya rastgele bir tane keşfet.</p>
+    
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Örn: Fotoğraf netleştir, sunum yap..." onkeyup="filterTools()">
       <button id="randomBtn" onclick="randomTool()" title="Beni Şaşırt!">🎲</button>
     </div>
   </section>
 
+  <!-- FİLTRELER -->
   <div class="filters">
     <button class="filter-btn active" onclick="setCategory('tümü')">🔥 Tümü</button>
     <button class="filter-btn" onclick="setCategory('tasarım')">🎨 Tasarım & Görsel</button>
     <button class="filter-btn" onclick="setCategory('ogrenci')">🎓 Öğrenci & Not</button>
     <button class="filter-btn" onclick="setCategory('ses')">🎵 Müzik & Video</button>
+    <button class="filter-btn" onclick="setCategory('araclar')">🛠️ Araçlar & Taktik</button>
     <button class="filter-btn" onclick="setCategory('favoriler')">⭐ Kaydedilenler</button>
   </div>
 
+  <!-- KART IZGARASI -->
   <div class="card-grid" id="toolGrid"></div>
 
+  <!-- TREOX AI CANLI BOT WIDGET -->
   <div class="chat-widget">
     <div class="chat-window" id="chatWindow">
-      <div class="chat-header"><span>🤖 Treox AI</span><button class="close-chat" onclick="toggleChat()">✖</button></div>
+      <div class="chat-header">
+        <span>🤖 Treox AI Asistanı</span>
+        <button class="close-chat" onclick="toggleChat()">✖</button>
+      </div>
       <div class="chat-body" id="chatBody">
-        <div class="bot-msg">Selam! Neye ihtiyacın var, hızlıca seç:</div>
-        <div id="quickReplies">
-          <button class="quick-btn" onclick="botReply('sunum')">📊 Slayt / Sunum Hazırla</button>
-          <button class="quick-btn" onclick="botReply('foto')">🖼️ Fotoğraf Netleştir</button>
-          <button class="quick-btn" onclick="botReply('muzik')">🎵 Şarkı / Müzik Üret</button>
+        <div class="bot-msg">Selam! ⚡ Neye ihtiyacın var, tek tıkla en iyi ücretsiz aracı önereyim:</div>
+        <div id="quickReplies" style="display:flex; flex-direction:column; gap:4px;">
+          <button class="quick-btn" onclick="botReply('mail')">📧 Geçici Mail & Sınırsız Hesap</button>
+          <button class="quick-btn" onclick="botReply('ses')">🎙️ Ses / Mikrofondaki Cızırtıyı Sil</button>
+          <button class="quick-btn" onclick="botReply('sunum')">📊 10 Saniyede Slayt Hazırla</button>
+          <button class="quick-btn" onclick="botReply('foto')">🖼️ Görsel / Fotoğraf Çizdir</button>
         </div>
       </div>
     </div>
-    <button class="chat-btn" onclick="toggleChat()">🤖</button>
+    <button class="chat-btn" onclick="toggleChat()" title="Treox AI ile Konuş">🤖</button>
   </div>
 
   <script>
-    // ARAÇ VERİTABANI (Beğeni sayıları eklendi)
+    // TÜM ARAÇLARIN ZENGİN VERİTABANI
     const tools = [
-      { id: 1, ad: "Leonardo AI", kategori: "tasarım", badge: "🎨 Görsel", desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.", link: "https://leonardo.ai", likes: 104 },
-      { id: 2, ad: "Perplexity AI", kategori: "ogrenci", badge: "🎓 Araştırma", desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler.", link: "https://perplexity.ai", likes: 89 },
-      { id: 3, ad: "Suno AI", kategori: "ses", badge: "🎵 Müzik", desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin.", link: "https://suno.com", likes: 142 },
-      { id: 4, ad: "Gamma App", kategori: "ogrenci", badge: "📊 Sunum", desc: "Konuyu yaz, saniyeler içinde görsel tasarımıyla birlikte slayt hazırlasın.", link: "https://gamma.app", likes: 95 }
+      {
+        id: 1,
+        ad: "10 Minute Mail",
+        kategori: "araclar",
+        desc: "10 dakikalığına geçici e-posta adresi verir.",
+        durustNot: "Diğer araçlarda sınırsız ücretsiz hesap açmanın anahtarıdır.",
+        prompt: "Sınırsız deneme hesabı açmak için temp mail al ve gizli sekmede kaydol.",
+        link: "https://10minutemail.com",
+        likes: 104
+      },
+      {
+        id: 2,
+        ad: "Adobe Podcast AI",
+        kategori: "ses",
+        desc: "Rüzgarlı ses kaydını bile 10.000 TL'lik stüdyo mikrofonu kalitesine getirir.",
+        durustNot: "Sadece ücretsiz Adobe hesabı (Google ile) açmanız yeterlidir.",
+        prompt: "Ses kaydını (.mp3/.wav) yükle, Enhance Speech butonunu aktif et ve indir.",
+        link: "https://podcast.adobe.com/enhance",
+        likes: 95
+      },
+      {
+        id: 3,
+        ad: "Gamma.app",
+        kategori: "ogrenci",
+        desc: "Sadece konuyu yazın, 10 saniyede tasarımlı sunum üretsin.",
+        durustNot: "Krediniz bittiğinde gizli sekmede yeni maille döngüye girebilirsiniz.",
+        prompt: "Sunum konusu: 'Yapay Zekanın Geleceği' -> 8 slaytlık Türkçe sunum tasarla.",
+        link: "https://gamma.app",
+        likes: 128
+      },
+      {
+        id: 4,
+        ad: "Leonardo AI",
+        kategori: "tasarım",
+        desc: "Midjourney'e para vermeye son! Ücretsiz kredilerle yüksek kaliteli görseller çizdir.",
+        durustNot: "Her gün 150 ücretsiz kredi yenilenir, ödeme yapmana hiç gerek kalmaz.",
+        prompt: "Cyberpunk style portrait of a futuristic hacker, neon violet lighting, 8k resolution --v 5",
+        link: "https://leonardo.ai",
+        likes: 156
+      },
+      {
+        id: 5,
+        ad: "Perplexity AI",
+        kategori: "ogrenci",
+        desc: "Tüm internetten araştırıp kaynaklarıyla birlikte direkt özetler sunar.",
+        durustNot: "Google aramalarından katbekat hızlıdır, doğru bilgiyi anında kaynak linkiyle verir.",
+        prompt: "Bu konuyu akademisyen gözüyle araştır ve bana kaynaklarıyla 3 ana maddede özetle.",
+        link: "https://perplexity.ai",
+        likes: 142
+      },
+      {
+        id: 6,
+        ad: "Suno AI",
+        kategori: "ses",
+        desc: "Sözleri yaz, senin için vokalli profesyonel stüdyo şarkısı üretsin.",
+        durustNot: "Günlük ücretsiz haklarınla tarz seçip sözleri ChatGPT'ye yazdırarak şarkı yapabilirsin.",
+        prompt: "Enerjik, synthwave ritimli, Türkçe pop vokalli bir yaz şarkısı üret.",
+        link: "https://suno.com",
+        likes: 180
+      },
+      {
+        id: 7,
+        ad: "Upscayl",
+        kategori: "tasarım",
+        desc: "Bulanık veya düşük çözünürlüklü fotoğrafları yapay zeka ile cam gibi netleştir.",
+        durustNot: "Açık kaynaklı ve tamamen ücretsizdir, bilgisayarına indirip internetsiz de kullanabilirsin.",
+        prompt: "Düşük çözünürlüklü eski görseli yükle ve 4x Digital Art modelini seçip netleştir.",
+        link: "https://upscayl.org",
+        likes: 110
+      },
+      {
+        id: 8,
+        ad: "ChatPDF",
+        kategori: "ogrenci",
+        desc: "Ders notlarını veya uzun PDF'leri yükle, içinden istediğin soruyu bota sor.",
+        durustNot: "Sınav haftası 100 sayfalık slaytları 1 dakikada özetletmek için en iyi asistandır.",
+        prompt: "Bu PDF belgesindeki vize sınavında çıkabilecek en önemli 5 anahtar soruyu çıkar.",
+        link: "https://chatpdf.com",
+        likes: 135
+      },
+      {
+        id: 9,
+        ad: "CapCut PC",
+        kategori: "ses",
+        desc: "Yapay zeka destekli otomatik altyazı ve video kurgu aracı.",
+        durustNot: "Masaüstü sürümünde otomatik Türkçe altyazı üretme tamamen ücretsizdir.",
+        prompt: "Metin sekmesinden 'Otomatik Altyazılar' seçeneğine basıp konuşmaları neon yazılara çevir.",
+        link: "https://capcut.com",
+        likes: 165
+      },
+      {
+        id: 10,
+        ad: "Clipdrop",
+        kategori: "tasarım",
+        desc: "Fotoğraftan nesne silme, arka plan değiştirme ve ışıklandırma araçları.",
+        durustNot: "İstemediğin kişileri veya yazıları fotoğraftan bozmadan tek tıkla siler.",
+        prompt: "Cleanup modunda silmek istediğin nesnenin üzerini fırçayla boya ve çıkar.",
+        link: "https://clipdrop.co",
+        likes: 98
+      }
     ];
 
     let currentCategory = 'tümü';
     let favorites = JSON.parse(localStorage.getItem('treoxFavs')) || [];
+    let userLikedList = JSON.parse(localStorage.getItem('treoxLikes')) || [];
 
+    // KARTLARI EKRANA BİREBİR EKSİKSİZ ÇİZDİRME
     function renderTools(filterText = '') {
       const grid = document.getElementById('toolGrid');
       grid.innerHTML = ''; 
 
       tools.forEach(tool => {
-        const matchesSearch = tool.ad.toLowerCase().includes(filterText) || tool.desc.toLowerCase().includes(filterText);
+        const matchesSearch = tool.ad.toLowerCase().includes(filterText) || 
+                              tool.desc.toLowerCase().includes(filterText) ||
+                              tool.durustNot.toLowerCase().includes(filterText);
+        
         const isFav = favorites.includes(tool.id);
-        const matchesCategory = currentCategory === 'tümü' || (currentCategory === 'favoriler' && isFav) || tool.kategori === currentCategory;
+        const isLiked = userLikedList.includes(tool.id);
+        const matchesCategory = currentCategory === 'tümü' || 
+                               (currentCategory === 'favoriler' && isFav) || 
+                               tool.kategori === currentCategory;
 
         if (matchesSearch && matchesCategory) {
           const card = document.createElement('div');
-          card.className = `card ${tool.kategori}`;
+          card.className = 'card';
           card.innerHTML = `
-            <span class="badge">${tool.badge}</span>
-            <h3>${tool.ad}</h3>
-            <p>${tool.desc}</p>
+            <div class="card-header">
+              <div class="card-title">${tool.ad}</div>
+              <span class="status-badge">✔ Çalışıyor</span>
+            </div>
             
-            <!-- GÖRSELDEKİ ALT MENÜ -->
+            <p class="card-desc">${tool.desc}</p>
+            
+            <!-- DÜRÜST NOT KUTUSU -->
+            <div class="honest-note">
+              <strong>Dürüst Not:</strong> ${tool.durustNot}
+            </div>
+
+            <!-- ÖRNEK PROMPT DROPDOWN -->
+            <details class="prompt-box">
+              <summary>⚡ Örnek Prompt & Taktik</summary>
+              <div class="prompt-content">${tool.prompt}</div>
+            </details>
+
+            <!-- KART ALTI ACTION MENÜSÜ -->
             <div class="card-footer">
-              <a href="${tool.link}" target="_blank" class="btn-link">Araca Git</a>
-              <button class="action-btn" title="Beğen">🤍 ${tool.likes}</button>
-              <button class="action-btn ${isFav ? 'starred' : ''}" onclick="toggleFav(${tool.id})" title="Kaydet">
+              <a href="${tool.link}" target="_blank" class="btn-visit">Araca Git</a>
+              
+              <button class="icon-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${tool.id})" title="Beğen">
+                ${isLiked ? '❤️' : '🤍'} ${tool.likes}
+              </button>
+              
+              <button class="icon-btn ${isFav ? 'starred' : ''}" onclick="toggleFav(${tool.id})" title="Kaydet">
                 ${isFav ? '⭐' : '☆'}
               </button>
-              <button class="action-btn" onclick="shareTool('${tool.ad}', '${tool.link}')" title="Paylaş">🔗</button>
+              
+              <button class="icon-btn" onclick="shareTool('${tool.ad}', '${tool.link}')" title="Paylaş">
+                🔗
+              </button>
             </div>
           `;
           grid.appendChild(card);
@@ -179,10 +346,24 @@
       filterTools();
     }
 
+    function toggleLike(id) {
+      const tool = tools.find(t => t.id === id);
+      if (userLikedList.includes(id)) {
+        userLikedList = userLikedList.filter(lId => lId !== id);
+        tool.likes--;
+      } else {
+        userLikedList.push(id);
+        tool.likes++;
+      }
+      localStorage.setItem('treoxLikes', JSON.stringify(userLikedList));
+      filterTools();
+    }
+
     function shareTool(ad, link) {
       if (navigator.share) {
         navigator.share({ title: ad, text: `Treox'ta bu ücretsiz yapay zeka aracını buldum: ${ad}`, url: link });
       } else {
+        navigator.clipboard.writeText(link);
         alert("Bağlantı kopyalandı: " + link);
       }
     }
@@ -205,7 +386,12 @@
 
     function botReply(type) {
       document.getElementById('quickReplies').style.display = 'none';
-      let res = type === 'sunum' ? "Sunumlar için <b>Gamma App</b> efsanedir!" : type === 'foto' ? "Netleştirme için <b>Upscayl</b> kullanabilirsin." : "Şarkı için <b>Suno AI</b> tam sana göre.";
+      let res = "";
+      if (type === 'mail') res = "Geçici mail ve sınırsız hesap için <b>10 Minute Mail</b> aracını kullanabilirsin! <br><br><a href='https://10minutemail.com' target='_blank' style='color:var(--neon-blue)'>Araca Git 🚀</a>";
+      if (type === 'ses') res = "Dip gürültüsü ve cızırtıları yok etmek için <b>Adobe Podcast AI</b> efsanedir! <br><br><a href='https://podcast.adobe.com/enhance' target='_blank' style='color:var(--neon-blue)'>Araca Git 🚀</a>";
+      if (type === 'sunum') res = "Saniyeler içinde sunum hazırlamak için <b>Gamma.app</b> kullanabilirsin. <br><br><a href='https://gamma.app' target='_blank' style='color:var(--neon-blue)'>Araca Git 🚀</a>";
+      if (type === 'foto') res = "Çizimler ve görseller için <b>Leonardo AI</b> önerimdir. <br><br><a href='https://leonardo.ai' target='_blank' style='color:var(--neon-purple)'>Araca Git 🚀</a>";
+
       document.getElementById('chatBody').innerHTML += `<div class="bot-msg" style="margin-top:10px;">${res}</div>`;
     }
 
